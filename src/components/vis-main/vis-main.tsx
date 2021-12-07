@@ -62,6 +62,19 @@ export class VisMain implements ComponentInterface {
       .setView([51.312588, -116.021118], 10);
     mapLayerDict['Grayscale'].addTo(map);
     leaflet.control.layers(mapLayerDict).addTo(map);
+    map.zoomControl.setPosition('topright');
+
+    leaflet.Control['Sidebar'] = leaflet.Control.extend({
+      onAdd: () => {
+        var sidebarElement = leaflet.DomUtil.create('vis-main-sidebar');
+        sidebarElement.classList.add('leaflet-control-layers');
+        return sidebarElement;
+      }
+    });
+    leaflet.control['sidebar'] = function (opts) {
+      return new leaflet.Control['Sidebar'](opts);
+    }
+    leaflet.control['sidebar']({ position: 'topleft' }).addTo(map);
   }
 
 }

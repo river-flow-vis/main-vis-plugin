@@ -1,0 +1,49 @@
+:host {
+  --margin: 10px;
+  --left-section-width: 3rem;
+
+  display: flex;
+  box-sizing: border-box;
+  margin: var(--margin);
+  height: calc(100vh - var(--margin) * 2);
+  width: auto;
+}
+
+#left-section,
+#right-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#left-section {
+  width: var(--left-section-width);
+}
+
+#right-section {
+  width: calc(20rem - var(--left-section-width));
+  overflow-x: hidden;
+  transition: width .3s ease;
+}
+
+#right-section.collapsed {
+  width: 0;
+}
+
+#collapse-toggle-button {
+  height: var(--left-section-width);
+  width: var(--left-section-width);
+  cursor: pointer;
+  border: none;
+}
+
+#collapse-toggle-button:hover {
+  background: darkgrey;
+}
+
+#header {
+  height: var(--left-section-width);
+  width: 100%;
+  font-size: 2rem;
+  background: lightgrey;
+}

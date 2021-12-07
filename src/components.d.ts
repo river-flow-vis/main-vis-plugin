@@ -9,6 +9,8 @@ export namespace Components {
     interface VisMain {
         "data": any;
     }
+    interface VisMainSidebar {
+    }
 }
 declare global {
     interface HTMLVisMainElement extends Components.VisMain, HTMLStencilElement {
@@ -17,16 +19,26 @@ declare global {
         prototype: HTMLVisMainElement;
         new (): HTMLVisMainElement;
     };
+    interface HTMLVisMainSidebarElement extends Components.VisMainSidebar, HTMLStencilElement {
+    }
+    var HTMLVisMainSidebarElement: {
+        prototype: HTMLVisMainSidebarElement;
+        new (): HTMLVisMainSidebarElement;
+    };
     interface HTMLElementTagNameMap {
         "vis-main": HTMLVisMainElement;
+        "vis-main-sidebar": HTMLVisMainSidebarElement;
     }
 }
 declare namespace LocalJSX {
     interface VisMain {
         "data"?: any;
     }
+    interface VisMainSidebar {
+    }
     interface IntrinsicElements {
         "vis-main": VisMain;
+        "vis-main-sidebar": VisMainSidebar;
     }
 }
 export { LocalJSX as JSX };
@@ -34,6 +46,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "vis-main": LocalJSX.VisMain & JSXBase.HTMLAttributes<HTMLVisMainElement>;
+            "vis-main-sidebar": LocalJSX.VisMainSidebar & JSXBase.HTMLAttributes<HTMLVisMainSidebarElement>;
         }
     }
 }
