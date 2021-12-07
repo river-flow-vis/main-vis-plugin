@@ -5,11 +5,16 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { MainData, SidebarData } from "./utils/data";
 export namespace Components {
     interface VisMain {
-        "data": any;
+        "data": MainData;
     }
     interface VisMainSidebar {
+        "data": SidebarData;
+    }
+    interface VisMainSidebarBarChart {
+        "data": any;
     }
 }
 declare global {
@@ -25,20 +30,32 @@ declare global {
         prototype: HTMLVisMainSidebarElement;
         new (): HTMLVisMainSidebarElement;
     };
+    interface HTMLVisMainSidebarBarChartElement extends Components.VisMainSidebarBarChart, HTMLStencilElement {
+    }
+    var HTMLVisMainSidebarBarChartElement: {
+        prototype: HTMLVisMainSidebarBarChartElement;
+        new (): HTMLVisMainSidebarBarChartElement;
+    };
     interface HTMLElementTagNameMap {
         "vis-main": HTMLVisMainElement;
         "vis-main-sidebar": HTMLVisMainSidebarElement;
+        "vis-main-sidebar-bar-chart": HTMLVisMainSidebarBarChartElement;
     }
 }
 declare namespace LocalJSX {
     interface VisMain {
-        "data"?: any;
+        "data"?: MainData;
     }
     interface VisMainSidebar {
+        "data"?: SidebarData;
+    }
+    interface VisMainSidebarBarChart {
+        "data"?: any;
     }
     interface IntrinsicElements {
         "vis-main": VisMain;
         "vis-main-sidebar": VisMainSidebar;
+        "vis-main-sidebar-bar-chart": VisMainSidebarBarChart;
     }
 }
 export { LocalJSX as JSX };
@@ -47,6 +64,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "vis-main": LocalJSX.VisMain & JSXBase.HTMLAttributes<HTMLVisMainElement>;
             "vis-main-sidebar": LocalJSX.VisMainSidebar & JSXBase.HTMLAttributes<HTMLVisMainSidebarElement>;
+            "vis-main-sidebar-bar-chart": LocalJSX.VisMainSidebarBarChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarBarChartElement>;
         }
     }
 }
