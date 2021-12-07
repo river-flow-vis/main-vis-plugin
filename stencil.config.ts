@@ -4,14 +4,10 @@ export const config: Config = {
   namespace: 'vis-plugin',
   outputTargets: [
     {
-      type: 'dist',
-      esmLoaderPath: '../loader',
-    },
-    {
       type: 'dist-custom-elements',
-    },
-    {
-      type: 'docs-readme',
+      externalRuntime: false,
+      autoDefineCustomElements: false,
+      includeGlobalScripts: true,
     },
     {
       type: 'www',
