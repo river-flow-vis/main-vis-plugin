@@ -7,6 +7,8 @@ import { Component, Host, h, ComponentInterface, State } from '@stencil/core';
 })
 export class VisMainSidebar implements ComponentInterface {
 
+  static readonly TAG_NAME = 'vis-main-sidebar';
+
   @State() collapsed = true;
 
   render() {

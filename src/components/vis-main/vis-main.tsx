@@ -8,6 +8,8 @@ import leaflet from 'leaflet';
 })
 export class VisMain implements ComponentInterface {
 
+  static readonly TAG_NAME = 'vis-main';
+
   private mapElement: HTMLDivElement;
 
   @Prop() data: any;
