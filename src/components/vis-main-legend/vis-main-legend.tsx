@@ -7,6 +7,8 @@ import { LegendData } from '../../utils/data';
   shadow: true,
 })
 export class VisMainLegend implements ComponentInterface {
+  static readonly TAG_NAME = 'vis-main-legend';
+  
   @Prop() data: LegendData;
 
   render() {
