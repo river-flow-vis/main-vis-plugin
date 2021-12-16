@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { MainData, SidebarChartData, SidebarData } from "./utils/data";
+import { MainData, SidebarChartData, SidebarData, SidebarMetadataData } from "./utils/data";
 export namespace Components {
     interface VisMain {
         "data": MainData;
@@ -15,6 +15,9 @@ export namespace Components {
     }
     interface VisMainSidebarBarChart {
         "data": SidebarChartData;
+    }
+    interface VisMainSidebarMetadata {
+        "data": SidebarMetadataData;
     }
 }
 declare global {
@@ -36,10 +39,17 @@ declare global {
         prototype: HTMLVisMainSidebarBarChartElement;
         new (): HTMLVisMainSidebarBarChartElement;
     };
+    interface HTMLVisMainSidebarMetadataElement extends Components.VisMainSidebarMetadata, HTMLStencilElement {
+    }
+    var HTMLVisMainSidebarMetadataElement: {
+        prototype: HTMLVisMainSidebarMetadataElement;
+        new (): HTMLVisMainSidebarMetadataElement;
+    };
     interface HTMLElementTagNameMap {
         "vis-main": HTMLVisMainElement;
         "vis-main-sidebar": HTMLVisMainSidebarElement;
         "vis-main-sidebar-bar-chart": HTMLVisMainSidebarBarChartElement;
+        "vis-main-sidebar-metadata": HTMLVisMainSidebarMetadataElement;
     }
 }
 declare namespace LocalJSX {
@@ -52,10 +62,14 @@ declare namespace LocalJSX {
     interface VisMainSidebarBarChart {
         "data"?: SidebarChartData;
     }
+    interface VisMainSidebarMetadata {
+        "data"?: SidebarMetadataData;
+    }
     interface IntrinsicElements {
         "vis-main": VisMain;
         "vis-main-sidebar": VisMainSidebar;
         "vis-main-sidebar-bar-chart": VisMainSidebarBarChart;
+        "vis-main-sidebar-metadata": VisMainSidebarMetadata;
     }
 }
 export { LocalJSX as JSX };
@@ -65,6 +79,7 @@ declare module "@stencil/core" {
             "vis-main": LocalJSX.VisMain & JSXBase.HTMLAttributes<HTMLVisMainElement>;
             "vis-main-sidebar": LocalJSX.VisMainSidebar & JSXBase.HTMLAttributes<HTMLVisMainSidebarElement>;
             "vis-main-sidebar-bar-chart": LocalJSX.VisMainSidebarBarChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarBarChartElement>;
+            "vis-main-sidebar-metadata": LocalJSX.VisMainSidebarMetadata & JSXBase.HTMLAttributes<HTMLVisMainSidebarMetadataElement>;
         }
     }
 }

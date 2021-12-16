@@ -22,6 +22,9 @@ export const mockData: MainData = {
       name: 'Sidebar',
       plugins: [
         {
+          name: 'SidebarMetadata',
+        },
+        {
           granularity: 'monthly',
           name: 'SidebarBarChart',
         },

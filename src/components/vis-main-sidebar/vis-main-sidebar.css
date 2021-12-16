@@ -24,7 +24,7 @@
 #right-section {
   width: calc(var(--width) - var(--left-section-width));
   overflow-x: hidden;
-  transition: width .3s ease;
+  transition: width 0.3s ease;
 }
 
 #right-section.collapsed {
@@ -49,10 +49,9 @@
   background: lightgrey;
 }
 
-#metadata-container,
-.charts-container > * {
-  margin: .5rem;
-  padding: .5rem;
+.chart-container {
+  margin: 0.5rem;
+  padding: 0.5rem;
   border: 1px solid black;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
 }

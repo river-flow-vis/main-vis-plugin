@@ -42,15 +42,6 @@ export class VisMainSidebar implements ComponentInterface {
         </div>
         <div id="right-section" class={this.collapsed ? 'collapsed' : ''}>
           <span id="header">Info for {this.data.selectedId || 'no selected ID'}</span>
-          <div id="metadata-container">
-            <h3>Metadata</h3>
-            {Object.entries(this.data.layerMetadata?.[this.data.selectedId]?.data || {}).map(([key, value]) => (
-              <span>
-                {key}: {value}
-                <br />
-              </span>
-            ))}
-          </div>
           <div id="charts-container" ref={el => (this.chartsContainerElement = el)}></div>
         </div>
       </Host>
@@ -69,7 +60,10 @@ export class VisMainSidebar implements ComponentInterface {
           layerData: data.layerData,
           layerMetadata: data.layerMetadata,
         };
-        this.chartsContainerElement.appendChild(pluginElement);
+        const containerElement = document.createElement('div');
+        containerElement.classList.toggle('chart-container', true);
+        containerElement.appendChild(pluginElement);
+        this.chartsContainerElement.appendChild(containerElement);
       }
     });
   }

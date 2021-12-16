@@ -71,6 +71,14 @@ export interface PluginData {
 export interface SidebarChartData extends PluginData {
   granularity?: string;
   selectedId?: string | number;
+  layerData?: LayerData;
+  layerMetadata?: LayerMetadata;
+}
+
+export interface SidebarMetadataData extends PluginData {
+  selectedId?: string | number;
+  layerData?: LayerData;
+  layerMetadata?: LayerMetadata;
 }
 
 export interface SidebarData extends PluginData {
