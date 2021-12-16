@@ -73,6 +73,7 @@ export interface SidebarChartData extends PluginData {
   selectedId?: string | number;
   layerData?: LayerData;
   layerMetadata?: LayerMetadata;
+  title?: string;
 }
 
 export interface SidebarMetadataData extends PluginData {
