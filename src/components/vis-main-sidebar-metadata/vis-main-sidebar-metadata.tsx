@@ -7,7 +7,7 @@ import { SidebarMetadataData } from '../../utils/data';
   shadow: true,
 })
 export class VisMainSidebarMetadata implements ComponentInterface {
-  static readonly TAG_NAME = 'vis-main-sidebar-bar-chart';
+  static readonly TAG_NAME = 'vis-main-sidebar-metadata';
 
   @Prop() data: SidebarMetadataData;
 
