@@ -20,6 +20,7 @@ export interface GeoJSONData {
 export interface PluginIndex {
   [name: string]: {
     exportName: string;
+    tagName: string;
     path: string;
     for?: string;
   };
@@ -29,6 +30,12 @@ export interface DataIndex {
   geoJSONUrl: string;
   metadataUrlTemplate: string;
   dataUrlTemplate: string;
+}
+
+export interface LayerMetadata {
+  [id: string]: {
+    data: any;
+  };
 }
 
 export interface LayerData {
@@ -57,16 +64,20 @@ export interface OverlayLayer {
 export interface PluginData {
   name?: string;
   plugins?: PluginData[];
+  pluginIndex?: PluginIndex;
   [prop: string]: any;
 }
 
-export interface SidebarData extends PluginData {
+export interface SidebarChartData extends PluginData {
   granularity?: string;
+  selectedId?: string | number;
 }
 
 export interface SidebarData extends PluginData {
   width?: string;
   selectedId?: string | number;
+  layerData?: LayerData;
+  layerMetadata?: LayerMetadata;
 }
 
 export interface MainData extends PluginData {

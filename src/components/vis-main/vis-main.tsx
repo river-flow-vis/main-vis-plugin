@@ -1,6 +1,6 @@
 import { Component, Host, h, Prop, ComponentInterface, Watch } from '@stencil/core';
 import leaflet from 'leaflet';
-import { BaseLayer, DataIndex, GeoJSONData, LayerData, MainData } from '../../utils/data';
+import { BaseLayer, DataIndex, GeoJSONData, LayerData, LayerMetadata, MainData, PluginIndex } from '../../utils/data';
 import { mockData } from './mock-data';
 
 @Component({
@@ -18,15 +18,20 @@ export class VisMain implements ComponentInterface {
   private sidebar: leaflet.Control;
   private sidebarElement: HTMLVisMainSidebarElement;
   private layerData: LayerData = {};
+  private layerMetadata: LayerMetadata = {};
+  private pluginIndex: PluginIndex = {};
 
   @Prop() data: MainData = mockData;
 
   @Watch('data')
-  dataChanged(data: MainData) {
+  async dataChanged(data: MainData) {
+    await this.updatePluginIndex(data);
     this.initializeOverlayLayers(data);
+    this.initializeSidebar();
   }
 
-  componentDidLoad() {
+  async componentDidLoad() {
+    await this.updatePluginIndex(this.data);
     if (!this.map) {
       this.initializeMap();
       this.initializeOverlayLayers(this.data);
@@ -52,9 +57,14 @@ export class VisMain implements ComponentInterface {
       const layerIds = geoJSONData.features.map(({ properties }) => properties.id);
       for (const id of layerIds) {
         const layerDataUrl = dataIndex.dataUrlTemplate.replace('{VARIABLE}', layerInfo.variable).replace('{GRANULARITY}', 'monthly').replace('{ID}', id);
-        const response = await fetch(this.SERVER_FILE_API_PATH + dataIndexDirectoryPath + layerDataUrl);
+        let response = await fetch(this.SERVER_FILE_API_PATH + dataIndexDirectoryPath + layerDataUrl);
         const layerDataForId = await response.json();
         this.layerData[id] = layerDataForId;
+
+        const layerMetadataUrl = dataIndex.metadataUrlTemplate.replace('{ID}', id);
+        response = await fetch(this.SERVER_FILE_API_PATH + dataIndexDirectoryPath + layerMetadataUrl);
+        const layerMetadataForId = await response.json();
+        this.layerMetadata[id] = layerMetadataForId;
       }
       const layer = leaflet.geoJSON(geoJSONData, {
         style: ({ properties }) => {
@@ -88,7 +98,7 @@ export class VisMain implements ComponentInterface {
         onAdd: () => {
           this.sidebarElement = leaflet.DomUtil.create('vis-main-sidebar');
           this.sidebarElement.classList.add('leaflet-control-layers');
-          this.sidebarElement.data = { plugins: sidebarPlugin.plugins };
+          this.sidebarElement.data = { ...sidebarPlugin, layerData: this.layerData, layerMetadata: this.layerMetadata, pluginIndex: this.pluginIndex };
           return this.sidebarElement;
         },
       });
@@ -133,5 +143,10 @@ export class VisMain implements ComponentInterface {
     }
     mapLayerDict[baseLayers[0]]?.addTo(map);
     leaflet.control.layers(mapLayerDict).addTo(map);
+  }
+
+  private async updatePluginIndex(data: MainData) {
+    const response = await fetch(this.SERVER_FILE_API_PATH + data.pluginIndexUrl);
+    this.pluginIndex = (await response.json()) as PluginIndex;
   }
 }

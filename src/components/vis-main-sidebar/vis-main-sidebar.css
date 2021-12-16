@@ -1,6 +1,7 @@
 :host {
   --margin: 10px;
   --left-section-width: 3rem;
+  --width: 20rem;
 
   display: flex;
   box-sizing: border-box;
@@ -21,7 +22,7 @@
 }
 
 #right-section {
-  width: calc(20rem - var(--left-section-width));
+  width: calc(var(--width) - var(--left-section-width));
   overflow-x: hidden;
   transition: width .3s ease;
 }
@@ -46,4 +47,12 @@
   width: 100%;
   font-size: 1.5rem;
   background: lightgrey;
+}
+
+#metadata-container,
+.charts-container > * {
+  margin: .5rem;
+  padding: .5rem;
+  border: 1px solid black;
+  border-radius: .5rem;
 }

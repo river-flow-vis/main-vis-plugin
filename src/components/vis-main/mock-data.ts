@@ -16,7 +16,7 @@ export const mockData: MainData = {
       variable: 'scalarSWE',
     },
   ],
-  pluginIndexUrl: 'public/plugin/vis-main/index.json',
+  pluginIndexUrl: 'public/plugins/vis-main/index.json',
   plugins: [
     {
       name: 'Sidebar',
