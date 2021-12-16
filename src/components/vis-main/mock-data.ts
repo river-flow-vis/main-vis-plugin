@@ -31,6 +31,10 @@ export const mockData: MainData = {
       ],
       width: '30rem',
     },
+    {
+      name: 'Legend',
+      variable: 'scalarSWE',
+    },
   ],
   yearRange: [2010, 2012],
 };

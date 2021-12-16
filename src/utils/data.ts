@@ -88,6 +88,14 @@ export interface SidebarData extends PluginData {
   layerMetadata?: LayerMetadata;
 }
 
+export interface LegendData extends PluginData {
+  selectedId?: string | number;
+  layerData?: LayerData;
+  layerMetadata?: LayerMetadata;
+  variable?: string;
+  colorMap: [number, number, string, string?][];
+}
+
 export interface MainData extends PluginData {
   pluginIndexUrl: string;
   baseLayers: BaseLayer[];

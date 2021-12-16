@@ -5,10 +5,13 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { MainData, SidebarChartData, SidebarData, SidebarMetadataData } from "./utils/data";
+import { LegendData, MainData, SidebarChartData, SidebarData, SidebarMetadataData } from "./utils/data";
 export namespace Components {
     interface VisMain {
         "data": MainData;
+    }
+    interface VisMainLegend {
+        "data": LegendData;
     }
     interface VisMainSidebar {
         "data": SidebarData;
@@ -26,6 +29,12 @@ declare global {
     var HTMLVisMainElement: {
         prototype: HTMLVisMainElement;
         new (): HTMLVisMainElement;
+    };
+    interface HTMLVisMainLegendElement extends Components.VisMainLegend, HTMLStencilElement {
+    }
+    var HTMLVisMainLegendElement: {
+        prototype: HTMLVisMainLegendElement;
+        new (): HTMLVisMainLegendElement;
     };
     interface HTMLVisMainSidebarElement extends Components.VisMainSidebar, HTMLStencilElement {
     }
@@ -47,6 +56,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "vis-main": HTMLVisMainElement;
+        "vis-main-legend": HTMLVisMainLegendElement;
         "vis-main-sidebar": HTMLVisMainSidebarElement;
         "vis-main-sidebar-bar-chart": HTMLVisMainSidebarBarChartElement;
         "vis-main-sidebar-metadata": HTMLVisMainSidebarMetadataElement;
@@ -55,6 +65,9 @@ declare global {
 declare namespace LocalJSX {
     interface VisMain {
         "data"?: MainData;
+    }
+    interface VisMainLegend {
+        "data"?: LegendData;
     }
     interface VisMainSidebar {
         "data"?: SidebarData;
@@ -67,6 +80,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "vis-main": VisMain;
+        "vis-main-legend": VisMainLegend;
         "vis-main-sidebar": VisMainSidebar;
         "vis-main-sidebar-bar-chart": VisMainSidebarBarChart;
         "vis-main-sidebar-metadata": VisMainSidebarMetadata;
@@ -77,6 +91,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "vis-main": LocalJSX.VisMain & JSXBase.HTMLAttributes<HTMLVisMainElement>;
+            "vis-main-legend": LocalJSX.VisMainLegend & JSXBase.HTMLAttributes<HTMLVisMainLegendElement>;
             "vis-main-sidebar": LocalJSX.VisMainSidebar & JSXBase.HTMLAttributes<HTMLVisMainSidebarElement>;
             "vis-main-sidebar-bar-chart": LocalJSX.VisMainSidebarBarChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarBarChartElement>;
             "vis-main-sidebar-metadata": LocalJSX.VisMainSidebarMetadata & JSXBase.HTMLAttributes<HTMLVisMainSidebarMetadataElement>;

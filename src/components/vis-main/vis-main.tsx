@@ -1,6 +1,6 @@
 import { Component, Host, h, Prop, ComponentInterface, Watch } from '@stencil/core';
 import leaflet from 'leaflet';
-import { BaseLayer, DataIndex, GeoJSONData, LayerData, LayerMetadata, MainData, PluginIndex } from '../../utils/data';
+import { BaseLayer, DataIndex, GeoJSONData, LayerData, LayerMetadata, MainData, PluginData, PluginIndex } from '../../utils/data';
 import { mockData } from './mock-data';
 
 @Component({
@@ -36,6 +36,7 @@ export class VisMain implements ComponentInterface {
       this.initializeMap();
       this.initializeOverlayLayers(this.data);
       this.initializeSidebar();
+      this.initializeLegends();
     }
   }
 
@@ -92,21 +93,43 @@ export class VisMain implements ComponentInterface {
   }
 
   private initializeSidebar() {
+    this.sidebar?.remove();
     const sidebarPlugin = this.data.plugins?.find(plugin => plugin.name === 'Sidebar');
     if (sidebarPlugin) {
-      leaflet.Control['Sidebar'] = leaflet.Control.extend({
-        onAdd: () => {
+      const sidebar = () => {
+        const control = new leaflet.Control({ position: 'topleft' });
+        control.onAdd = () => {
           this.sidebarElement = leaflet.DomUtil.create('vis-main-sidebar');
           this.sidebarElement.classList.add('leaflet-control-layers');
           this.sidebarElement.data = { ...sidebarPlugin, layerData: this.layerData, layerMetadata: this.layerMetadata, pluginIndex: this.pluginIndex };
           return this.sidebarElement;
-        },
-      });
-      leaflet.control['sidebar'] = function (opts) {
-        return new leaflet.Control['Sidebar'](opts);
+        };
+        return control;
       };
-      this.sidebar = leaflet.control['sidebar']({ position: 'topleft' });
-      this.sidebar.addTo(this.map);
+      this.sidebar = sidebar().addTo(this.map);
+    }
+  }
+
+  private initializeLegends() {
+    const legendPlugins = this.data.plugins?.filter(plugin => plugin.name === 'Legend');
+    if (legendPlugins?.length > 0) {
+      const legend = (legendPlugin: PluginData) => {
+        const control = new leaflet.Control({ position: 'bottomright' });
+        control.onAdd = () => {
+          const legendElement = leaflet.DomUtil.create('vis-main-legend');
+          legendElement.classList.add('leaflet-control-layers');
+          legendElement.data = {
+            ...legendPlugin,
+            layerData: this.layerData,
+            layerMetadata: this.layerMetadata,
+            pluginIndex: this.pluginIndex,
+            colorMap: this.data.overlayLayers?.find(layer => layer.variable === legendPlugin.variable)?.colorMap,
+          };
+          return legendElement;
+        };
+        return control;
+      };
+      legendPlugins.forEach(legendPlugin => legend(legendPlugin).addTo(this.map));
     }
   }
 
