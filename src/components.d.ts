@@ -19,6 +19,9 @@ export namespace Components {
     interface VisMainSidebarBarChart {
         "data": SidebarChartData;
     }
+    interface VisMainSidebarLineChart {
+        "data": SidebarChartData;
+    }
     interface VisMainSidebarMetadata {
         "data": SidebarMetadataData;
     }
@@ -48,6 +51,12 @@ declare global {
         prototype: HTMLVisMainSidebarBarChartElement;
         new (): HTMLVisMainSidebarBarChartElement;
     };
+    interface HTMLVisMainSidebarLineChartElement extends Components.VisMainSidebarLineChart, HTMLStencilElement {
+    }
+    var HTMLVisMainSidebarLineChartElement: {
+        prototype: HTMLVisMainSidebarLineChartElement;
+        new (): HTMLVisMainSidebarLineChartElement;
+    };
     interface HTMLVisMainSidebarMetadataElement extends Components.VisMainSidebarMetadata, HTMLStencilElement {
     }
     var HTMLVisMainSidebarMetadataElement: {
@@ -59,6 +68,7 @@ declare global {
         "vis-main-legend": HTMLVisMainLegendElement;
         "vis-main-sidebar": HTMLVisMainSidebarElement;
         "vis-main-sidebar-bar-chart": HTMLVisMainSidebarBarChartElement;
+        "vis-main-sidebar-line-chart": HTMLVisMainSidebarLineChartElement;
         "vis-main-sidebar-metadata": HTMLVisMainSidebarMetadataElement;
     }
 }
@@ -75,6 +85,9 @@ declare namespace LocalJSX {
     interface VisMainSidebarBarChart {
         "data"?: SidebarChartData;
     }
+    interface VisMainSidebarLineChart {
+        "data"?: SidebarChartData;
+    }
     interface VisMainSidebarMetadata {
         "data"?: SidebarMetadataData;
     }
@@ -83,6 +96,7 @@ declare namespace LocalJSX {
         "vis-main-legend": VisMainLegend;
         "vis-main-sidebar": VisMainSidebar;
         "vis-main-sidebar-bar-chart": VisMainSidebarBarChart;
+        "vis-main-sidebar-line-chart": VisMainSidebarLineChart;
         "vis-main-sidebar-metadata": VisMainSidebarMetadata;
     }
 }
@@ -94,6 +108,7 @@ declare module "@stencil/core" {
             "vis-main-legend": LocalJSX.VisMainLegend & JSXBase.HTMLAttributes<HTMLVisMainLegendElement>;
             "vis-main-sidebar": LocalJSX.VisMainSidebar & JSXBase.HTMLAttributes<HTMLVisMainSidebarElement>;
             "vis-main-sidebar-bar-chart": LocalJSX.VisMainSidebarBarChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarBarChartElement>;
+            "vis-main-sidebar-line-chart": LocalJSX.VisMainSidebarLineChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarLineChartElement>;
             "vis-main-sidebar-metadata": LocalJSX.VisMainSidebarMetadata & JSXBase.HTMLAttributes<HTMLVisMainSidebarMetadataElement>;
         }
     }
