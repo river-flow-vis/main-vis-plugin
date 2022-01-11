@@ -99,6 +99,7 @@ export class VisMain implements ComponentInterface {
         control.onAdd = () => {
           this.sidebarElement = leaflet.DomUtil.create('vis-main-sidebar');
           this.sidebarElement.classList.add('leaflet-control-layers');
+          this.preventDraggingEventForTheMapElement(this.sidebarElement);
           this.sidebarElement.data = { ...sidebarPlugin, layerData: this.layerData, layerMetadata: this.layerMetadata, pluginIndex: this.pluginIndex };
           return this.sidebarElement;
         };
@@ -116,6 +117,7 @@ export class VisMain implements ComponentInterface {
         control.onAdd = () => {
           const legendElement = leaflet.DomUtil.create('vis-main-legend');
           legendElement.classList.add('leaflet-control-layers');
+          this.preventDraggingEventForTheMapElement(legendElement);
           legendElement.data = {
             ...legendPlugin,
             layerData: this.layerData,
@@ -139,8 +141,7 @@ export class VisMain implements ComponentInterface {
         control.onAdd = () => {
           const timeControlElement = leaflet.DomUtil.create('vis-main-time-control');
           timeControlElement.classList.add('leaflet-control-layers');
-          timeControlElement.addEventListener('mouseover', () => this.map.dragging.disable());
-          timeControlElement.addEventListener('mouseout', () => this.map.dragging.enable());
+          this.preventDraggingEventForTheMapElement(timeControlElement);
           timeControlElement.data = {
             ...legendPlugin,
             yearRange: this.data?.yearRange,
@@ -154,6 +155,11 @@ export class VisMain implements ComponentInterface {
       };
       timeControlPlugins.forEach(legendPlugin => timeControl(legendPlugin).addTo(this.map));
     }
+  }
+
+  private preventDraggingEventForTheMapElement(element: HTMLElement) {
+    element.addEventListener('mouseover', () => this.map.dragging.disable());
+    element.addEventListener('mouseout', () => this.map.dragging.enable());
   }
 
   private initializeBaseLayers(map: leaflet.Map, baseLayers: BaseLayer[]) {
