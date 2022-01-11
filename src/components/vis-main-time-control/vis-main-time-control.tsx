@@ -9,7 +9,7 @@ const MS_IN_SECOND = 1000;
   shadow: true,
 })
 export class VisMainTimeControl implements ComponentInterface {
-  static readonly TAG_NAME = 'vis-main-legend';
+  static readonly TAG_NAME = 'vis-main-time-control';
 
   private timestamps: { year: string; timestamp: string }[];
   private animationTimer: NodeJS.Timer;
