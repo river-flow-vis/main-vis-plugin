@@ -41,6 +41,9 @@ export const mockData: MainData = {
       name: 'Legend',
       variable: 'scalarSWE',
     },
+    {
+      name: 'TimeControl',
+    },
   ],
   yearRange: [2010, 2012],
 };

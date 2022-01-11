@@ -92,9 +92,15 @@ export interface SidebarData extends PluginData {
 export interface LegendData extends PluginData {
   selectedId?: string | number;
   layerData?: LayerData;
-  layerMetadata?: LayerMetadata;
   variable?: string;
   colorMap: [number, number, string, string?][];
+}
+
+export interface TimeControlData extends PluginData {
+  yearRange: [number, number];
+  layerData?: LayerData;
+  layerMetadata?: LayerMetadata;
+  updateTime?: (year: string, timestamp: string) => void;
 }
 
 export interface MainData extends PluginData {

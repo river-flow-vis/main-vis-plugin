@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { LegendData, MainData, SidebarChartData, SidebarData, SidebarMetadataData } from "./utils/data";
+import { LegendData, MainData, SidebarChartData, SidebarData, SidebarMetadataData, TimeControlData } from "./utils/data";
 export namespace Components {
     interface VisMain {
         "data": MainData;
@@ -24,6 +24,9 @@ export namespace Components {
     }
     interface VisMainSidebarMetadata {
         "data": SidebarMetadataData;
+    }
+    interface VisMainTimeControl {
+        "data": TimeControlData;
     }
 }
 declare global {
@@ -63,6 +66,12 @@ declare global {
         prototype: HTMLVisMainSidebarMetadataElement;
         new (): HTMLVisMainSidebarMetadataElement;
     };
+    interface HTMLVisMainTimeControlElement extends Components.VisMainTimeControl, HTMLStencilElement {
+    }
+    var HTMLVisMainTimeControlElement: {
+        prototype: HTMLVisMainTimeControlElement;
+        new (): HTMLVisMainTimeControlElement;
+    };
     interface HTMLElementTagNameMap {
         "vis-main": HTMLVisMainElement;
         "vis-main-legend": HTMLVisMainLegendElement;
@@ -70,6 +79,7 @@ declare global {
         "vis-main-sidebar-bar-chart": HTMLVisMainSidebarBarChartElement;
         "vis-main-sidebar-line-chart": HTMLVisMainSidebarLineChartElement;
         "vis-main-sidebar-metadata": HTMLVisMainSidebarMetadataElement;
+        "vis-main-time-control": HTMLVisMainTimeControlElement;
     }
 }
 declare namespace LocalJSX {
@@ -91,6 +101,9 @@ declare namespace LocalJSX {
     interface VisMainSidebarMetadata {
         "data"?: SidebarMetadataData;
     }
+    interface VisMainTimeControl {
+        "data"?: TimeControlData;
+    }
     interface IntrinsicElements {
         "vis-main": VisMain;
         "vis-main-legend": VisMainLegend;
@@ -98,6 +111,7 @@ declare namespace LocalJSX {
         "vis-main-sidebar-bar-chart": VisMainSidebarBarChart;
         "vis-main-sidebar-line-chart": VisMainSidebarLineChart;
         "vis-main-sidebar-metadata": VisMainSidebarMetadata;
+        "vis-main-time-control": VisMainTimeControl;
     }
 }
 export { LocalJSX as JSX };
@@ -110,6 +124,7 @@ declare module "@stencil/core" {
             "vis-main-sidebar-bar-chart": LocalJSX.VisMainSidebarBarChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarBarChartElement>;
             "vis-main-sidebar-line-chart": LocalJSX.VisMainSidebarLineChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarLineChartElement>;
             "vis-main-sidebar-metadata": LocalJSX.VisMainSidebarMetadata & JSXBase.HTMLAttributes<HTMLVisMainSidebarMetadataElement>;
+            "vis-main-time-control": LocalJSX.VisMainTimeControl & JSXBase.HTMLAttributes<HTMLVisMainTimeControlElement>;
         }
     }
 }

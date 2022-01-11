@@ -1,6 +1,6 @@
 import { Component, Host, h, Prop, ComponentInterface, Watch } from '@stencil/core';
 import leaflet from 'leaflet';
-import { BaseLayer, DataIndex, GeoJSONData, LayerData, LayerMetadata, MainData, PluginData, PluginIndex } from '../../utils/data';
+import { BaseLayer, DataIndex, GeoJSONData, LayerData, LayerMetadata, MainData, OverlayLayer, PluginData, PluginIndex } from '../../utils/data';
 import { mockData } from './mock-data';
 
 @Component({
@@ -20,6 +20,7 @@ export class VisMain implements ComponentInterface {
   private layerData: LayerData = {};
   private layerMetadata: LayerMetadata = {};
   private pluginIndex: PluginIndex = {};
+  private overlayLayers: [leaflet.GeoJSON, OverlayLayer][] = [];
 
   @Prop() data: MainData = mockData;
 
@@ -33,10 +34,11 @@ export class VisMain implements ComponentInterface {
   async componentDidLoad() {
     await this.updatePluginIndex(this.data);
     if (!this.map) {
-      this.initializeMap();
-      this.initializeOverlayLayers(this.data);
+      await this.initializeMap();
+      await this.initializeOverlayLayers(this.data);
       this.initializeSidebar();
       this.initializeLegends();
+      this.initializeTimeControl();
     }
   }
 
@@ -48,8 +50,8 @@ export class VisMain implements ComponentInterface {
     );
   }
 
-  private initializeOverlayLayers(data: MainData) {
-    data.overlayLayers.forEach(async layerInfo => {
+  private async initializeOverlayLayers(data: MainData) {
+    for (const layerInfo of data.overlayLayers) {
       let response = await fetch(this.SERVER_FILE_API_PATH + layerInfo.dataIndexUrl);
       const dataIndex = (await response.json()) as DataIndex;
       const dataIndexDirectoryPath = layerInfo.dataIndexUrl.split('/').slice(0, -1).join('/') + '/';
@@ -68,13 +70,8 @@ export class VisMain implements ComponentInterface {
         this.layerMetadata[id] = layerMetadataForId;
       }
       const layer = leaflet.geoJSON(geoJSONData, {
-        style: ({ properties }) => {
-          const averageValue = this.layerData[properties.id].data[data.yearRange[0]][0].average;
-          const color = layerInfo.colorMap.find(([min, max]) => averageValue > min && averageValue <= max)?.[2];
-          return {
-            fillColor: color,
-            fillOpacity: 0.5,
-          };
+        style: {
+          fillOpacity: 0.5,
         },
         onEachFeature: (feature, layer) => {
           layer.on('click', () => {
@@ -82,8 +79,9 @@ export class VisMain implements ComponentInterface {
           });
         },
       });
+      this.overlayLayers.push([layer, layerInfo]);
       layer.addTo(this.map);
-    });
+    }
   }
 
   private async initializeMap() {
@@ -133,6 +131,31 @@ export class VisMain implements ComponentInterface {
     }
   }
 
+  private initializeTimeControl() {
+    const timeControlPlugins = this.data.plugins?.filter(plugin => plugin.name === 'TimeControl');
+    if (timeControlPlugins?.length > 0) {
+      const timeControl = (legendPlugin: PluginData) => {
+        const control = new leaflet.Control({ position: 'bottomright' });
+        control.onAdd = () => {
+          const timeControlElement = leaflet.DomUtil.create('vis-main-time-control');
+          timeControlElement.classList.add('leaflet-control-layers');
+          timeControlElement.addEventListener('mouseover', () => this.map.dragging.disable());
+          timeControlElement.addEventListener('mouseout', () => this.map.dragging.enable());
+          timeControlElement.data = {
+            ...legendPlugin,
+            yearRange: this.data?.yearRange,
+            layerData: this.layerData,
+            updateTime: (year, timestamp) => this.updateTime(year, timestamp),
+            pluginIndex: this.pluginIndex,
+          };
+          return timeControlElement;
+        };
+        return control;
+      };
+      timeControlPlugins.forEach(legendPlugin => timeControl(legendPlugin).addTo(this.map));
+    }
+  }
+
   private initializeBaseLayers(map: leaflet.Map, baseLayers: BaseLayer[]) {
     const attribution =
       'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' + 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
@@ -171,5 +194,18 @@ export class VisMain implements ComponentInterface {
   private async updatePluginIndex(data: MainData) {
     const response = await fetch(this.SERVER_FILE_API_PATH + data.pluginIndexUrl);
     this.pluginIndex = (await response.json()) as PluginIndex;
+  }
+
+  private updateTime(year: string, timestamp: string) {
+    this.overlayLayers.forEach(([layer, layerInfo]) =>
+      layer.setStyle(({ properties }) => {
+        const averageValue = this.layerData[properties.id].data[year][timestamp].average;
+        const color = layerInfo.colorMap.find(([min, max]) => averageValue > min && averageValue <= max)?.[2];
+        return {
+          fillColor: color,
+          fillOpacity: 0.5,
+        };
+      }),
+    );
   }
 }
