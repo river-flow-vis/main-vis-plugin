@@ -31,7 +31,7 @@ export class VisMainSidebarLineChart implements ComponentInterface {
 
     const points = timeSeriesDataArray.map(({ value }, i) => [
       i * barWidth + barWidth / 2 + perservedWidth,
-      (svgSize - perservedHeight * 2) * (value / (maxValue - minValue)) + perservedHeight,
+      (svgSize - perservedHeight * 2) * (1 - value / (maxValue - minValue)) + perservedHeight,
     ]);
     const pathD = `M${points.map(point => point.join(' ')).join(' L')}`;
     return (
@@ -40,7 +40,7 @@ export class VisMainSidebarLineChart implements ComponentInterface {
         <svg height="100%" width="calc(100% - 2rem)" viewBox={`0 0 ${svgSize} ${svgSize}`} preserveAspectRatio="xMidYMid meet">
           {points?.length && (
             <g>
-              <path d={pathD} fill="none" stroke="black" stroke-width={.5} />
+              <path d={pathD} fill="none" stroke="black" stroke-width={0.5} />
               <g>
                 {points.map(([x, y], i) => (
                   <circle cx={x} cy={y} r={1}>
