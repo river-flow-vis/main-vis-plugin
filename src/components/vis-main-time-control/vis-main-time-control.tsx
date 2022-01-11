@@ -77,7 +77,7 @@ export class VisMainTimeControl implements ComponentInterface {
           Pause
         </button>
         <div>
-          <label>Timestamp/Second</label>
+          <label>Timestamps/Second</label>
           <input type="number" value={this.timestampsPerSecond} onChange={event => (this.timestampsPerSecond = +(event.currentTarget as HTMLInputElement).value)} />
         </div>
       </Host>
