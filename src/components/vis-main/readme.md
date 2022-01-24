@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type       | Default    |
-| -------- | --------- | ----------- | ---------- | ---------- |
-| `data`   | --        |             | `MainData` | `mockData` |
+| Property            | Attribute                | Description | Type       | Default                          |
+| ------------------- | ------------------------ | ----------- | ---------- | -------------------------------- |
+| `data`              | --                       |             | `MainData` | `mockData`                       |
+| `serverFileAPIPath` | `server-file-a-p-i-path` |             | `string`   | `'http://localhost:5000/files/'` |
 
 
 ----------------------------------------------

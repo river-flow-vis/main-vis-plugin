@@ -9,6 +9,7 @@ import { LegendData, MainData, SidebarChartData, SidebarData, SidebarMetadataDat
 export namespace Components {
     interface VisMain {
         "data": MainData;
+        "serverFileAPIPath": string;
     }
     interface VisMainLegend {
         "data": LegendData;
@@ -85,6 +86,7 @@ declare global {
 declare namespace LocalJSX {
     interface VisMain {
         "data"?: MainData;
+        "serverFileAPIPath"?: string;
     }
     interface VisMainLegend {
         "data"?: LegendData;

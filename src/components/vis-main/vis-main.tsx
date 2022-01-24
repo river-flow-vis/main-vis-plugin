@@ -11,8 +11,6 @@ import { mockData } from './mock-data';
 export class VisMain implements ComponentInterface {
   static readonly TAG_NAME = 'vis-main';
 
-  private readonly SERVER_FILE_API_PATH = 'http://localhost:5000/files/';
-
   private mapElement: HTMLDivElement;
   private map: leaflet.Map;
   private sidebar: leaflet.Control;
@@ -21,6 +19,8 @@ export class VisMain implements ComponentInterface {
   private layerMetadata: LayerMetadata = {};
   private pluginIndex: PluginIndex = {};
   private overlayLayers: [leaflet.GeoJSON, OverlayLayer][] = [];
+
+  @Prop() serverFileAPIPath = 'http://localhost:5000/files/';
 
   @Prop() data: MainData = mockData;
 
@@ -52,20 +52,20 @@ export class VisMain implements ComponentInterface {
 
   private async initializeOverlayLayers(data: MainData) {
     for (const layerInfo of data.overlayLayers) {
-      let response = await fetch(this.SERVER_FILE_API_PATH + layerInfo.dataIndexUrl);
+      let response = await fetch(this.serverFileAPIPath + layerInfo.dataIndexUrl);
       const dataIndex = (await response.json()) as DataIndex;
       const dataIndexDirectoryPath = layerInfo.dataIndexUrl.split('/').slice(0, -1).join('/') + '/';
-      response = await fetch(this.SERVER_FILE_API_PATH + dataIndexDirectoryPath + dataIndex.geoJSONUrl);
+      response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + dataIndex.geoJSONUrl);
       const geoJSONData = (await response.json()) as GeoJSONData;
       const layerIds = geoJSONData.features.map(({ properties }) => properties.id);
       for (const id of layerIds) {
         const layerDataUrl = dataIndex.dataUrlTemplate.replace('{VARIABLE}', layerInfo.variable).replace('{GRANULARITY}', 'monthly').replace('{ID}', id);
-        let response = await fetch(this.SERVER_FILE_API_PATH + dataIndexDirectoryPath + layerDataUrl);
+        let response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + layerDataUrl);
         const layerDataForId = await response.json();
         this.layerData[id] = layerDataForId;
 
         const layerMetadataUrl = dataIndex.metadataUrlTemplate.replace('{ID}', id);
-        response = await fetch(this.SERVER_FILE_API_PATH + dataIndexDirectoryPath + layerMetadataUrl);
+        response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + layerMetadataUrl);
         const layerMetadataForId = await response.json();
         this.layerMetadata[id] = layerMetadataForId;
       }
@@ -198,7 +198,7 @@ export class VisMain implements ComponentInterface {
   }
 
   private async updatePluginIndex(data: MainData) {
-    const response = await fetch(this.SERVER_FILE_API_PATH + data.pluginIndexUrl);
+    const response = await fetch(this.serverFileAPIPath + data.pluginIndexUrl);
     this.pluginIndex = (await response.json()) as PluginIndex;
   }
 
