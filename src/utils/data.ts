@@ -100,6 +100,8 @@ export interface TimeControlData extends PluginData {
   yearRange: [number, number];
   layerData?: LayerData;
   layerMetadata?: LayerMetadata;
+  timestamp: { year: string; timestamp: string };
+  timestampsPerSecond: number;
   updateTime?: (year: string, timestamp: string) => void;
 }
 
