@@ -1,6 +1,6 @@
 import { Component, Host, h, Prop, ComponentInterface, Watch } from '@stencil/core';
 import leaflet from 'leaflet';
-import { BaseLayer, DataIndex, GeoJSONData, LayerData, LayerMetadata, MainData, OverlayLayer, PluginData, PluginIndex } from '../../utils/data';
+import { BaseLayer, DataIndex, GeoJSONData, LayerData, LayerMetadata, MainData, OverlayLayer, PluginData, PluginIndex, TimeControlData } from '../../utils/data';
 import { mockData } from './mock-data';
 
 @Component({
@@ -136,24 +136,24 @@ export class VisMain implements ComponentInterface {
   private initializeTimeControl() {
     const timeControlPlugins = this.data.plugins?.filter(plugin => plugin.name === 'TimeControl');
     if (timeControlPlugins?.length > 0) {
-      const timeControl = (legendPlugin: PluginData) => {
+      const timeControl = (timeControlPlugin: PluginData) => {
         const control = new leaflet.Control({ position: 'bottomright' });
         control.onAdd = () => {
           const timeControlElement = leaflet.DomUtil.create('vis-main-time-control');
           timeControlElement.classList.add('leaflet-control-layers');
           this.preventDraggingEventForTheMapElement(timeControlElement);
           timeControlElement.data = {
-            ...legendPlugin,
+            ...timeControlPlugin,
             yearRange: this.data?.yearRange,
             layerData: this.layerData,
             updateTime: (year, timestamp) => this.updateTime(year, timestamp),
             pluginIndex: this.pluginIndex,
-          };
+          } as TimeControlData;
           return timeControlElement;
         };
         return control;
       };
-      timeControlPlugins.forEach(legendPlugin => timeControl(legendPlugin).addTo(this.map));
+      timeControlPlugins.forEach(timeControlPlugin => timeControl(timeControlPlugin).addTo(this.map));
     }
   }
 
