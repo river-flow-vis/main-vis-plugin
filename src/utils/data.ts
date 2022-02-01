@@ -87,6 +87,7 @@ export interface SidebarData extends PluginData {
   selectedId?: string | number;
   layerData?: LayerData;
   layerMetadata?: LayerMetadata;
+  updateSelectedId: (id: string | number) => void;
 }
 
 export interface LegendData extends PluginData {

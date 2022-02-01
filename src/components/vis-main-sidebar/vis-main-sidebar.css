@@ -31,14 +31,15 @@
   width: 0;
 }
 
-#collapse-toggle-button {
+#left-section > button {
   height: var(--left-section-width);
   width: var(--left-section-width);
   cursor: pointer;
   border: none;
 }
 
-#collapse-toggle-button:hover {
+#left-section > button.selected,
+#left-section > button:hover {
   background: darkgrey;
 }
 

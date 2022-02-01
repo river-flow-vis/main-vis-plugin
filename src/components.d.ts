@@ -16,6 +16,7 @@ export namespace Components {
     }
     interface VisMainSidebar {
         "data": SidebarData;
+        "pins": (string | number)[];
     }
     interface VisMainSidebarBarChart {
         "data": SidebarChartData;
@@ -93,6 +94,7 @@ declare namespace LocalJSX {
     }
     interface VisMainSidebar {
         "data"?: SidebarData;
+        "pins"?: (string | number)[];
     }
     interface VisMainSidebarBarChart {
         "data"?: SidebarChartData;

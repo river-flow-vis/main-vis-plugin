@@ -1,5 +1,5 @@
 import { Component, Host, h, ComponentInterface, State, Prop, Watch, Element } from '@stencil/core';
-import { SidebarData } from '../../utils/data';
+import { LayerData, OverlayLayer, SidebarData } from '../../utils/data';
 
 @Component({
   tag: 'vis-main-sidebar',
@@ -14,6 +14,7 @@ export class VisMainSidebar implements ComponentInterface {
   @Element() hostElmenet: HTMLVisMainElement;
 
   @Prop() data: SidebarData;
+  @Prop() pins: (string | number)[] = [];
 
   @Watch('data')
   dataChanged(data: SidebarData) {
@@ -36,9 +37,21 @@ export class VisMainSidebar implements ComponentInterface {
     return (
       <Host>
         <div id="left-section">
-          <button id="collapse-toggle-button" onClick={() => (this.collapsed = !this.collapsed)}>
-            &#9776;
-          </button>
+          <button onClick={() => (this.collapsed = !this.collapsed)}>&#9776;</button>
+          {this.pins?.map(pinId => (
+            <button
+              class={this.data?.selectedId === pinId ? 'selected' : ''}
+              title={pinId.toString()}
+              onClick={() => this.data?.updateSelectedId(pinId)}
+              onContextMenu={event => {
+                event.preventDefault();
+                this.pins = this.pins.filter(p => p !== pinId);
+              }}
+            >
+              📍
+            </button>
+          ))}
+          <button onClick={() => (this.pins = [...this.pins, this.data?.selectedId])}>+</button>
         </div>
         <div id="right-section" class={this.collapsed ? 'collapsed' : ''}>
           <span id="header">Info for {this.data.selectedId || 'no selected ID'}</span>

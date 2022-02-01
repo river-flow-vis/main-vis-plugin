@@ -75,10 +75,7 @@ export class VisMain implements ComponentInterface {
       const geoJSONLayer = leaflet.geoJSON(geoJSONData, {
         style: defaultStyle,
         onEachFeature: (feature, layer) => {
-          layer.on('click', () => {
-            this.sidebarElement.data = { ...this.sidebarElement.data, selectedId: feature.properties.id };
-            geoJSONLayer.eachLayer(l => l['setStyle'](layer === l ? { color: 'red', fillOpacity: 0.8 } : { color: '#3388ff', fillOpacity: 0.5 }));
-          });
+          layer.on('click', () => this.selectPolygon(undefined, feature.properties.id));
         },
       });
       this.overlayLayers.push([geoJSONLayer, layerInfo]);
@@ -102,7 +99,13 @@ export class VisMain implements ComponentInterface {
           this.sidebarElement = leaflet.DomUtil.create('vis-main-sidebar');
           this.sidebarElement.classList.add('leaflet-control-layers');
           this.preventDraggingEventForTheMapElement(this.sidebarElement);
-          this.sidebarElement.data = { ...sidebarPlugin, layerData: this.layerData, layerMetadata: this.layerMetadata, pluginIndex: this.pluginIndex };
+          this.sidebarElement.data = {
+            ...sidebarPlugin,
+            layerData: this.layerData,
+            layerMetadata: this.layerMetadata,
+            pluginIndex: this.pluginIndex,
+            updateSelectedId: id => this.selectPolygon(undefined, id),
+          };
           return this.sidebarElement;
         };
         return control;
@@ -219,5 +222,14 @@ export class VisMain implements ComponentInterface {
 
   private obtainGeoJSONPolygonColor(layerInfo: OverlayLayer, averageValue: number) {
     return layerInfo.colorMap.find(([min, max]) => averageValue > min && averageValue <= max)?.[2];
+  }
+
+  private selectPolygon(_layerInfo: OverlayLayer, id: string | number) {
+    this.sidebarElement.data = { ...this.sidebarElement.data, selectedId: id };
+    this.overlayLayers.forEach(([layer, _layerInfo]) =>
+      layer.setStyle(({ properties }) => {
+        return properties.id === id ? { color: 'red', fillOpacity: 0.8 } : { color: '#3388ff', fillOpacity: 0.5 };
+      }),
+    );
   }
 }
