@@ -69,18 +69,20 @@ export class VisMain implements ComponentInterface {
         const layerMetadataForId = await response.json();
         this.layerMetadata[id] = layerMetadataForId;
       }
-      const layer = leaflet.geoJSON(geoJSONData, {
-        style: {
-          fillOpacity: 0.5,
-        },
+      const defaultStyle = {
+        fillOpacity: 0.5,
+      };
+      const geoJSONLayer = leaflet.geoJSON(geoJSONData, {
+        style: defaultStyle,
         onEachFeature: (feature, layer) => {
           layer.on('click', () => {
             this.sidebarElement.data = { ...this.sidebarElement.data, selectedId: feature.properties.id };
+            geoJSONLayer.eachLayer(l => l['setStyle'](layer === l ? { color: 'red', fillOpacity: 0.8 } : { color: '#3388ff', fillOpacity: 0.5 }));
           });
         },
       });
-      this.overlayLayers.push([layer, layerInfo]);
-      layer.addTo(this.map);
+      this.overlayLayers.push([geoJSONLayer, layerInfo]);
+      geoJSONLayer.addTo(this.map);
     }
   }
 
@@ -206,12 +208,16 @@ export class VisMain implements ComponentInterface {
     this.overlayLayers.forEach(([layer, layerInfo]) =>
       layer.setStyle(({ properties }) => {
         const averageValue = this.layerData[properties.id].data[year][timestamp].average;
-        const color = layerInfo.colorMap.find(([min, max]) => averageValue > min && averageValue <= max)?.[2];
+        const color = this.obtainGeoJSONPolygonColor(layerInfo, averageValue);
         return {
           fillColor: color,
-          fillOpacity: 0.5,
+          // fillOpacity: 0.5,
         };
       }),
     );
+  }
+
+  private obtainGeoJSONPolygonColor(layerInfo: OverlayLayer, averageValue: number) {
+    return layerInfo.colorMap.find(([min, max]) => averageValue > min && averageValue <= max)?.[2];
   }
 }
