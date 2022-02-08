@@ -228,7 +228,17 @@ export class VisMain implements ComponentInterface {
     this.sidebarElement.data = { ...this.sidebarElement.data, selectedId: id };
     this.overlayLayers.forEach(([layer, _layerInfo]) =>
       layer.setStyle(({ properties }) => {
-        return properties.id === id ? { color: 'red', fillOpacity: 0.8 } : { color: '#3388ff', fillOpacity: 0.5 };
+        let style;
+        if (properties.id === id) {
+          layer
+            .getLayers()
+            .find(polygon => polygon['feature'].properties.id === id)
+            ?.['bringToFront']();
+          style = { color: 'red', fillOpacity: 0.8 };
+        } else {
+          style = { color: '#3388ff', fillOpacity: 0.5 };
+        }
+        return style;
       }),
     );
   }
