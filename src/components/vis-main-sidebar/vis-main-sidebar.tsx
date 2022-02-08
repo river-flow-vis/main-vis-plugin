@@ -1,5 +1,6 @@
 import { Component, Host, h, ComponentInterface, State, Prop, Watch, Element } from '@stencil/core';
-import { LayerData, OverlayLayer, SidebarData } from '../../utils/data';
+import { LayerData, OverlayLayer, SidebarData, SidebarSelection } from '../../utils/data';
+import { objectsEqual } from '../../utils/object-equal';
 
 @Component({
   tag: 'vis-main-sidebar',
@@ -14,7 +15,7 @@ export class VisMainSidebar implements ComponentInterface {
   @Element() hostElmenet: HTMLVisMainElement;
 
   @Prop() data: SidebarData;
-  @Prop() pins: (string | number)[] = [];
+  @Prop() pins: SidebarSelection[] = [];
 
   @Watch('data')
   dataChanged(data: SidebarData) {
@@ -22,7 +23,7 @@ export class VisMainSidebar implements ComponentInterface {
       this.hostElmenet.style.setProperty('--width', data.width);
     }
     this.updatePlugins(data);
-    if (data.selectedId) {
+    if (data.selection) {
       this.collapsed = false;
     }
   }
@@ -38,20 +39,20 @@ export class VisMainSidebar implements ComponentInterface {
       <Host>
         <div id="left-section">
           <button onClick={() => (this.collapsed = !this.collapsed)}>&#9776;</button>
-          {this.pins?.map(pinId => (
+          {this.pins?.map(pin => (
             <button
-              class={this.data?.selectedId === pinId ? 'selected' : ''}
-              title={pinId.toString()}
-              onClick={() => this.data?.updateSelectedId(pinId)}
+              class={objectsEqual(this.data?.selection, pin) ? 'selected' : ''}
+              title={`${pin?.layer?.name},${pin?.id}`}
+              onClick={() => this.data?.updateSelection(pin)}
               onContextMenu={event => {
                 event.preventDefault();
-                this.pins = this.pins.filter(p => p !== pinId);
+                this.pins = this.pins.filter(p => p !== pin);
               }}
             >
               📍
             </button>
           ))}
-          <button onClick={() => (this.pins = [...this.pins, this.data?.selectedId])}>+</button>
+          <button onClick={() => (this.pins = [...this.pins, this.data?.selection])}>+</button>
         </div>
         <div id="right-section" class={this.collapsed ? 'collapsed' : ''}>
           <span id="header">Info for {this.data.selectedId || 'no selected ID'}</span>
@@ -69,9 +70,9 @@ export class VisMainSidebar implements ComponentInterface {
         const pluginElement = document.createElement(pluginTagName);
         (pluginElement as any).data = {
           ...plugin,
-          selectedId: data.selectedId,
-          layerData: data.layerData,
-          layerMetadata: data.layerMetadata,
+          selection: data.selection,
+          layerDataMap: data.layerDataMap,
+          layerMetadataMap: data.layerMetadataMap,
         };
         const containerElement = document.createElement('div');
         containerElement.classList.toggle('chart-container', true);

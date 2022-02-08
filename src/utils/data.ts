@@ -70,37 +70,41 @@ export interface PluginData {
 
 export interface SidebarChartData extends PluginData {
   granularity?: string;
-  selectedId?: string | number;
-  layerData?: LayerData;
-  layerMetadata?: LayerMetadata;
+  selection?: { layer: OverlayLayer; id: string | number };
+  layerDataMap?: Map<OverlayLayer, LayerData>;
+  layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
   title?: string;
 }
 
 export interface SidebarMetadataData extends PluginData {
-  selectedId?: string | number;
-  layerData?: LayerData;
-  layerMetadata?: LayerMetadata;
+  selection?: { layer: OverlayLayer; id: string | number };
+  layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
 }
 
 export interface SidebarData extends PluginData {
   width?: string;
-  selectedId?: string | number;
-  layerData?: LayerData;
-  layerMetadata?: LayerMetadata;
-  updateSelectedId: (id: string | number) => void;
+  selection?: SidebarSelection;
+  layerDataMap?: Map<OverlayLayer, LayerData>;
+  layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
+  updateSelection: (selection: SidebarSelection) => void;
+}
+
+export interface SidebarSelection {
+  layer: OverlayLayer;
+  id: string | number;
 }
 
 export interface LegendData extends PluginData {
-  selectedId?: string | number;
-  layerData?: LayerData;
+  selection?: { layer: OverlayLayer; id: string | number };
+  layerDataMap?: Map<OverlayLayer, LayerData>;
   variable?: string;
   colorMap: [number, number, string, string?][];
 }
 
 export interface TimeControlData extends PluginData {
   yearRange: [number, number];
-  layerData?: LayerData;
-  layerMetadata?: LayerMetadata;
+  layerDataMap?: Map<OverlayLayer, LayerData>;
+  layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
   timestamp: { year: string; timestamp: string };
   timestampsPerSecond: number;
   updateTime?: (year: string, timestamp: string) => void;

@@ -33,7 +33,10 @@ export class VisMainTimeControl implements ComponentInterface {
     for (let i = yearRange?.[0]; i <= yearRange?.[1]; i++) {
       years.push(i.toString());
     }
-    this.timestamps = years.flatMap(year => Object.keys(data?.layerData?.[Object.keys(data?.layerData)[0]]?.data[year] || {}).map(timestamp => ({ year, timestamp })));
+    this.timestamps = years.flatMap(year => {
+      const firstLayerData = [...data?.layerDataMap.values()]?.[0];
+      return Object.keys(firstLayerData?.[Object.keys(firstLayerData)[0]]?.data[year] || {}).map(timestamp => ({ year, timestamp }));
+    });
     if (data?.timestamp) {
       this.timestamp = data.timestamp;
     }

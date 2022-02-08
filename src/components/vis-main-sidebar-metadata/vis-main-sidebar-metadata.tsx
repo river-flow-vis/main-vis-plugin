@@ -16,7 +16,7 @@ export class VisMainSidebarMetadata implements ComponentInterface {
       <Host>
         <div style={{ height: '10rem', width: '100%' }}>
           <h3>Metadata</h3>
-          {Object.entries(this.data.layerMetadata?.[this.data.selectedId]?.data || {}).map(([key, value]) => (
+          {Object.entries(this.data.layerMetadataMap?.get(this.data?.selection?.layer)?.[this.data?.selection?.id]?.data || {}).map(([key, value]) => (
             <span>
               {key}: {value}
               <br />

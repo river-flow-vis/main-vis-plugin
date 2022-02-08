@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { LegendData, MainData, SidebarChartData, SidebarData, SidebarMetadataData, TimeControlData } from "./utils/data";
+import { LegendData, MainData, SidebarChartData, SidebarData, SidebarMetadataData, SidebarSelection, TimeControlData } from "./utils/data";
 export namespace Components {
     interface VisMain {
         "data": MainData;
@@ -16,7 +16,7 @@ export namespace Components {
     }
     interface VisMainSidebar {
         "data": SidebarData;
-        "pins": (string | number)[];
+        "pins": SidebarSelection[];
     }
     interface VisMainSidebarBarChart {
         "data": SidebarChartData;
@@ -94,7 +94,7 @@ declare namespace LocalJSX {
     }
     interface VisMainSidebar {
         "data"?: SidebarData;
-        "pins"?: (string | number)[];
+        "pins"?: SidebarSelection[];
     }
     interface VisMainSidebarBarChart {
         "data"?: SidebarChartData;

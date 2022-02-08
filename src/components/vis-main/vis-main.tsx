@@ -86,7 +86,7 @@ export class VisMain implements ComponentInterface {
       const geoJSONLayer = leaflet.geoJSON(geoJSONData, {
         style: defaultStyle,
         onEachFeature: (feature, layer) => {
-          layer.on('click', () => this.selectPolygon(undefined, feature.properties.id));
+          layer.on('click', () => this.selectPolygon(layerInfo, feature.properties.id));
         },
       });
       this.overlayLayers.push([geoJSONLayer, layerInfo]);
@@ -113,10 +113,10 @@ export class VisMain implements ComponentInterface {
           this.preventDraggingEventForTheMapElement(this.sidebarElement);
           this.sidebarElement.data = {
             ...sidebarPlugin,
-            layerData: this.layerDataMap.get(this.data.overlayLayers[0]),
-            layerMetadata: this.layerMetadataMap.get(this.data.overlayLayers[0]),
+            layerDataMap: this.layerDataMap,
+            layerMetadataMap: this.layerMetadataMap,
             pluginIndex: this.pluginIndex,
-            updateSelectedId: id => this.selectPolygon(undefined, id),
+            updateSelection: ({ layer, id }) => this.selectPolygon(layer, id),
           };
           return this.sidebarElement;
         };
@@ -162,7 +162,7 @@ export class VisMain implements ComponentInterface {
           timeControlElement.data = {
             ...timeControlPlugin,
             yearRange: this.data?.yearRange,
-            layerData: this.layerDataMap.get(this.data.overlayLayers[0]),
+            layerDataMap: this.layerDataMap,
             updateTime: (year, timestamp) => this.updateTime(year, timestamp),
             pluginIndex: this.pluginIndex,
           } as TimeControlData;
@@ -237,12 +237,13 @@ export class VisMain implements ComponentInterface {
     return layerInfo.colorMap.find(([min, max]) => averageValue > min && averageValue <= max)?.[2];
   }
 
-  private selectPolygon(_layerInfo: OverlayLayer, id: string | number) {
-    this.sidebarElement.data = { ...this.sidebarElement.data, selectedId: id };
-    this.overlayLayers.forEach(([layer, _layerInfo]) =>
+  private selectPolygon(layer: OverlayLayer, id: string | number) {
+    this.sidebarElement.data = { ...this.sidebarElement.data, selection: { layer, id } };
+    const selectedLayer = layer;
+    this.overlayLayers.forEach(([layer, layerInfo]) =>
       layer.setStyle(({ properties }) => {
         let style;
-        if (properties.id === id) {
+        if (selectedLayer === layerInfo && properties.id === id) {
           layer
             .getLayers()
             .find(polygon => polygon['feature'].properties.id === id)

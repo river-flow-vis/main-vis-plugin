@@ -12,7 +12,7 @@ export class VisMainSidebarBarChart implements ComponentInterface {
   @Prop() data: SidebarChartData;
 
   render() {
-    const timeSeriesData = this.data.layerData?.[this.data.selectedId]?.data;
+    const timeSeriesData = this.data?.layerDataMap?.get(this.data?.selection?.layer)?.[this.data?.selection?.id]?.data;
     const timeSeriesDataArray = Object.entries(timeSeriesData || {}).flatMap(([year, yearData]) =>
       Object.entries(yearData || {}).map(([timestamp, data]) => ({
         year,
@@ -31,7 +31,7 @@ export class VisMainSidebarBarChart implements ComponentInterface {
       <Host>
         <div style={{ height: '2rem' }}>{this.data.title || 'Bar Chart'}</div>
         <svg height="100%" width="calc(100% - 2rem)" viewBox={`0 0 ${svgSize} ${svgSize}`} preserveAspectRatio="xMidYMid meet">
-          {timeSeriesDataArray.map(({year, month, value}, i) => (
+          {timeSeriesDataArray.map(({ year, month, value }, i) => (
             <rect x={i * barWidth} width={barWidth} y={svgSize * (1 - value / (maxValue - minValue))} height={(svgSize * value) / (maxValue - minValue)} fill="blue">
               <title>{`${year}/${month}: ${value}`}</title>
             </rect>

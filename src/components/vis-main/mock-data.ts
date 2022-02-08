@@ -38,12 +38,12 @@ export const mockData: MainData = {
         {
           granularity: 'monthly',
           name: 'SidebarBarChart',
-          title: 'scalarSWE',
+          title: 'Bar',
         },
         {
           granularity: 'monthly',
           name: 'SidebarLineChart',
-          title: 'scalarSWE',
+          title: 'Line',
         },
       ],
       width: '30rem',
