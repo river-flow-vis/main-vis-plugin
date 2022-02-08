@@ -247,9 +247,9 @@ export class VisMain implements ComponentInterface {
             .getLayers()
             .find(polygon => polygon['feature'].properties.id === id)
             ?.['bringToFront']();
-          style = { color: 'red', fillOpacity: 0.8 };
+          style = { color: 'red' };
         } else {
-          style = { color: '#3388ff', fillOpacity: 0.5 };
+          style = { color: '#3388ff' };
         }
         return style;
       }),
