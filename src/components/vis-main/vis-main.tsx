@@ -15,10 +15,11 @@ export class VisMain implements ComponentInterface {
   private map: leaflet.Map;
   private sidebar: leaflet.Control;
   private sidebarElement: HTMLVisMainSidebarElement;
-  private layerData: LayerData = {};
-  private layerMetadata: LayerMetadata = {};
+  private layerDataMap: Map<OverlayLayer, LayerData> = new Map();
+  private layerMetadataMap: Map<OverlayLayer, LayerMetadata> = new Map();
   private pluginIndex: PluginIndex = {};
   private overlayLayers: [leaflet.GeoJSON, OverlayLayer][] = [];
+  private layerControl = leaflet.control.layers();
 
   @Prop() serverFileAPIPath = 'http://localhost:5000/files/';
 
@@ -62,12 +63,22 @@ export class VisMain implements ComponentInterface {
         const layerDataUrl = dataIndex.dataUrlTemplate.replace('{VARIABLE}', layerInfo.variable).replace('{GRANULARITY}', 'monthly').replace('{ID}', id);
         let response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + layerDataUrl);
         const layerDataForId = await response.json();
-        this.layerData[id] = layerDataForId;
+        let layerData = this.layerDataMap.get(layerInfo);
+        if (!layerData) {
+          this.layerDataMap.set(layerInfo, {});
+          layerData = this.layerDataMap.get(layerInfo);
+        }
+        layerData[id] = layerDataForId;
 
         const layerMetadataUrl = dataIndex.metadataUrlTemplate.replace('{ID}', id);
         response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + layerMetadataUrl);
         const layerMetadataForId = await response.json();
-        this.layerMetadata[id] = layerMetadataForId;
+        let layerMetadata = this.layerMetadataMap.get(layerInfo);
+        if (!layerMetadata) {
+          this.layerMetadataMap.set(layerInfo, {});
+          layerMetadata = this.layerMetadataMap.get(layerInfo);
+        }
+        layerMetadata[id] = layerMetadataForId;
       }
       const defaultStyle = {
         fillOpacity: 0.5,
@@ -80,6 +91,7 @@ export class VisMain implements ComponentInterface {
       });
       this.overlayLayers.push([geoJSONLayer, layerInfo]);
       geoJSONLayer.addTo(this.map);
+      this.layerControl.addOverlay(geoJSONLayer, layerInfo.name);
     }
   }
 
@@ -101,8 +113,8 @@ export class VisMain implements ComponentInterface {
           this.preventDraggingEventForTheMapElement(this.sidebarElement);
           this.sidebarElement.data = {
             ...sidebarPlugin,
-            layerData: this.layerData,
-            layerMetadata: this.layerMetadata,
+            layerData: this.layerDataMap.get(this.data.overlayLayers[0]),
+            layerMetadata: this.layerMetadataMap.get(this.data.overlayLayers[0]),
             pluginIndex: this.pluginIndex,
             updateSelectedId: id => this.selectPolygon(undefined, id),
           };
@@ -125,8 +137,8 @@ export class VisMain implements ComponentInterface {
           this.preventDraggingEventForTheMapElement(legendElement);
           legendElement.data = {
             ...legendPlugin,
-            layerData: this.layerData,
-            layerMetadata: this.layerMetadata,
+            layerData: this.layerDataMap.get(this.data.overlayLayers[0]),
+            layerMetadata: this.layerMetadataMap.get(this.data.overlayLayers[0]),
             pluginIndex: this.pluginIndex,
             colorMap: this.data.overlayLayers?.find(layer => layer.variable === legendPlugin.variable)?.colorMap,
           };
@@ -150,7 +162,7 @@ export class VisMain implements ComponentInterface {
           timeControlElement.data = {
             ...timeControlPlugin,
             yearRange: this.data?.yearRange,
-            layerData: this.layerData,
+            layerData: this.layerDataMap.get(this.data.overlayLayers[0]),
             updateTime: (year, timestamp) => this.updateTime(year, timestamp),
             pluginIndex: this.pluginIndex,
           } as TimeControlData;
@@ -199,7 +211,8 @@ export class VisMain implements ComponentInterface {
       });
     }
     mapLayerDict[baseLayers[0]]?.addTo(map);
-    leaflet.control.layers(mapLayerDict).addTo(map);
+    this.layerControl.addTo(map);
+    Object.entries(mapLayerDict).forEach(([name, layer]) => this.layerControl.addBaseLayer(layer, name));
   }
 
   private async updatePluginIndex(data: MainData) {
@@ -210,7 +223,7 @@ export class VisMain implements ComponentInterface {
   private updateTime(year: string, timestamp: string) {
     this.overlayLayers.forEach(([layer, layerInfo]) =>
       layer.setStyle(({ properties }) => {
-        const averageValue = this.layerData[properties.id].data[year][timestamp].average;
+        const averageValue = this.layerDataMap.get(layerInfo)[properties.id].data[year][timestamp].average;
         const color = this.obtainGeoJSONPolygonColor(layerInfo, averageValue);
         return {
           fillColor: color,
