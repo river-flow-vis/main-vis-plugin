@@ -1,5 +1,5 @@
 import { Component, Host, h, ComponentInterface, State, Prop, Watch, Element } from '@stencil/core';
-import { LayerData, OverlayLayer, SidebarData, SidebarSelection } from '../../utils/data';
+import { SidebarData, SidebarSelection } from '../../utils/data';
 import { objectsEqual } from '../../utils/object-equal';
 
 @Component({
