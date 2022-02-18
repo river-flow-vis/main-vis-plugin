@@ -30,6 +30,17 @@ export const mockData: MainData = {
   pluginIndexUrl: 'public/plugins/vis-main/index.json',
   plugins: [
     {
+      name: 'Longbar',
+      plugins: [
+        {
+          granularity: 'monthly',
+          name: 'SidebarLineChart',
+          title: 'Line',
+          variables: ['scalarSWE', 'scalarSenHeatTotal'],
+        },
+      ],
+    },
+    {
       name: 'Sidebar',
       plugins: [
         {

@@ -14,6 +14,9 @@ export namespace Components {
     interface VisMainLegend {
         "data": LegendData;
     }
+    interface VisMainLongbar {
+        "data": SidebarData;
+    }
     interface VisMainSidebar {
         "data": SidebarData;
         "pins": SidebarSelection[];
@@ -43,6 +46,12 @@ declare global {
     var HTMLVisMainLegendElement: {
         prototype: HTMLVisMainLegendElement;
         new (): HTMLVisMainLegendElement;
+    };
+    interface HTMLVisMainLongbarElement extends Components.VisMainLongbar, HTMLStencilElement {
+    }
+    var HTMLVisMainLongbarElement: {
+        prototype: HTMLVisMainLongbarElement;
+        new (): HTMLVisMainLongbarElement;
     };
     interface HTMLVisMainSidebarElement extends Components.VisMainSidebar, HTMLStencilElement {
     }
@@ -77,6 +86,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "vis-main": HTMLVisMainElement;
         "vis-main-legend": HTMLVisMainLegendElement;
+        "vis-main-longbar": HTMLVisMainLongbarElement;
         "vis-main-sidebar": HTMLVisMainSidebarElement;
         "vis-main-sidebar-bar-chart": HTMLVisMainSidebarBarChartElement;
         "vis-main-sidebar-line-chart": HTMLVisMainSidebarLineChartElement;
@@ -91,6 +101,9 @@ declare namespace LocalJSX {
     }
     interface VisMainLegend {
         "data"?: LegendData;
+    }
+    interface VisMainLongbar {
+        "data"?: SidebarData;
     }
     interface VisMainSidebar {
         "data"?: SidebarData;
@@ -111,6 +124,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "vis-main": VisMain;
         "vis-main-legend": VisMainLegend;
+        "vis-main-longbar": VisMainLongbar;
         "vis-main-sidebar": VisMainSidebar;
         "vis-main-sidebar-bar-chart": VisMainSidebarBarChart;
         "vis-main-sidebar-line-chart": VisMainSidebarLineChart;
@@ -124,6 +138,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "vis-main": LocalJSX.VisMain & JSXBase.HTMLAttributes<HTMLVisMainElement>;
             "vis-main-legend": LocalJSX.VisMainLegend & JSXBase.HTMLAttributes<HTMLVisMainLegendElement>;
+            "vis-main-longbar": LocalJSX.VisMainLongbar & JSXBase.HTMLAttributes<HTMLVisMainLongbarElement>;
             "vis-main-sidebar": LocalJSX.VisMainSidebar & JSXBase.HTMLAttributes<HTMLVisMainSidebarElement>;
             "vis-main-sidebar-bar-chart": LocalJSX.VisMainSidebarBarChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarBarChartElement>;
             "vis-main-sidebar-line-chart": LocalJSX.VisMainSidebarLineChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarLineChartElement>;

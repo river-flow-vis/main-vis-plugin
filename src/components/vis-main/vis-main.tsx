@@ -15,6 +15,8 @@ export class VisMain implements ComponentInterface {
   private map: leaflet.Map;
   private sidebar: leaflet.Control;
   private sidebarElement: HTMLVisMainSidebarElement;
+  private longbar: leaflet.Control;
+  private longbarElement: HTMLVisMainLongbarElement;
   private layerDataMap: Map<OverlayLayer, LayerData> = new Map();
   private layerMetadataMap: Map<OverlayLayer, LayerMetadata> = new Map();
   private pluginIndex: PluginIndex = {};
@@ -38,6 +40,7 @@ export class VisMain implements ComponentInterface {
       await this.initializeMap();
       await this.initializeOverlayLayers(this.data);
       this.initializeSidebar();
+      this.initializeLongbar();
       this.initializeLegends();
       this.initializeTimeControl();
     }
@@ -123,6 +126,31 @@ export class VisMain implements ComponentInterface {
         return control;
       };
       this.sidebar = sidebar().addTo(this.map);
+    }
+  }
+
+  private initializeLongbar() {
+    this.longbar?.remove();
+    const longbarPlugin = this.data.plugins?.find(plugin => plugin.name === 'Longbar');
+    if (longbarPlugin) {
+      const topbar = () => {
+        const control = new leaflet.Control({ position: 'bottomright' });
+        control.onAdd = () => {
+          this.longbarElement = leaflet.DomUtil.create('vis-main-longbar');
+          this.longbarElement.classList.add('leaflet-control-layers');
+          this.preventDraggingEventForTheMapElement(this.longbarElement);
+          this.longbarElement.data = {
+            ...longbarPlugin,
+            layerDataMap: this.layerDataMap,
+            layerMetadataMap: this.layerMetadataMap,
+            pluginIndex: this.pluginIndex,
+            updateSelection: ({ layer, id }) => this.selectPolygon(layer, id),
+          };
+          return this.longbarElement;
+        };
+        return control;
+      };
+      this.longbar = topbar().addTo(this.map);
     }
   }
 
@@ -239,6 +267,7 @@ export class VisMain implements ComponentInterface {
 
   private selectPolygon(layer: OverlayLayer, id: string | number) {
     this.sidebarElement.data = { ...this.sidebarElement.data, selection: { layer, id }, yearRange: this.data.yearRange };
+    this.longbarElement.data = { ...this.longbarElement.data, selection: { layer, id }, yearRange: this.data.yearRange };
     const selectedLayer = layer;
     this.overlayLayers.forEach(([layer, layerInfo]) =>
       layer.setStyle(({ properties }) => {
