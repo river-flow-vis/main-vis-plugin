@@ -1,4 +1,5 @@
 import { Component, Host, h, ComponentInterface, State, Prop, Watch, Element } from '@stencil/core';
+import * as d3 from 'd3';
 import { SidebarData, SidebarSelection } from '../../utils/data';
 import { objectsEqual } from '../../utils/object-equal';
 
@@ -35,11 +36,13 @@ export class VisMainSidebar implements ComponentInterface {
   }
 
   render() {
+    const scaleColor = d3.scaleOrdinal(d3.schemeAccent);
+
     return (
       <Host>
         <div id="left-section">
           <button onClick={() => (this.collapsed = !this.collapsed)}>&#9776;</button>
-          {this.pins?.map(pin => (
+          {this.pins?.map((pin, i) => (
             <button
               class={objectsEqual(this.data?.selection, pin) ? 'selected' : ''}
               title={`${pin?.layer?.name},${pin?.id}`}
@@ -49,7 +52,7 @@ export class VisMainSidebar implements ComponentInterface {
                 this.pins = this.pins.filter(p => p !== pin);
               }}
             >
-              📍
+              <span style={{ color: 'transparent', textShadow: `0 0 0 ${scaleColor(i.toString())}` }}>📍</span>
             </button>
           ))}
           <button onClick={() => (this.pins = [...this.pins, this.data?.selection])}>+</button>
