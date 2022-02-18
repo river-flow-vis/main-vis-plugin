@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type          | Default     |
-| -------- | --------- | ----------- | ------------- | ----------- |
-| `data`   | --        |             | `SidebarData` | `undefined` |
+| Property | Attribute | Description | Type                 | Default     |
+| -------- | --------- | ----------- | -------------------- | ----------- |
+| `data`   | --        |             | `SidebarData`        | `undefined` |
+| `pins`   | --        |             | `SidebarSelection[]` | `[]`        |
 
 
 ----------------------------------------------
