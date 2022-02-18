@@ -238,7 +238,7 @@ export class VisMain implements ComponentInterface {
   }
 
   private selectPolygon(layer: OverlayLayer, id: string | number) {
-    this.sidebarElement.data = { ...this.sidebarElement.data, selection: { layer, id } };
+    this.sidebarElement.data = { ...this.sidebarElement.data, selection: { layer, id }, yearRange: this.data.yearRange };
     const selectedLayer = layer;
     this.overlayLayers.forEach(([layer, layerInfo]) =>
       layer.setStyle(({ properties }) => {

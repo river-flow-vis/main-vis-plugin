@@ -73,6 +73,7 @@ export interface SidebarChartData extends PluginData {
   selection?: { layer: OverlayLayer; id: string | number };
   layerDataMap?: Map<OverlayLayer, LayerData>;
   layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
+  yearRange?: [number, number];
   title?: string;
 }
 
@@ -86,6 +87,7 @@ export interface SidebarData extends PluginData {
   selection?: SidebarSelection;
   layerDataMap?: Map<OverlayLayer, LayerData>;
   layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
+  yearRange?: [number, number];
   updateSelection: (selection: SidebarSelection) => void;
 }
 

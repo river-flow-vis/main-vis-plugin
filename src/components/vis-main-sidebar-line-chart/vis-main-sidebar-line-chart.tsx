@@ -33,7 +33,10 @@ export class VisMainSidebarLineChart implements ComponentInterface {
   }
 
   render() {
-    const timeSeriesData = this.data?.layerDataMap?.get(this.data?.selection?.layer)?.[this.data?.selection?.id]?.data;
+    let timeSeriesData = this.data?.layerDataMap?.get(this.data?.selection?.layer)?.[this.data?.selection?.id]?.data;
+    const minYear = this.data?.yearRange?.[0];
+    const maxYear = this.data?.yearRange?.[1];
+    timeSeriesData = Object.fromEntries(Object.entries(timeSeriesData).filter(([year]) => (!minYear || minYear <= +year) && (!maxYear || maxYear >= +year)));
     const timeSeriesDataArray = Object.entries(timeSeriesData || {}).flatMap(([year, yearData]) =>
       Object.entries(yearData || {}).map(([timestamp, data]) => ({
         year,

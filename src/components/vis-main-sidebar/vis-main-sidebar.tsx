@@ -73,6 +73,7 @@ export class VisMainSidebar implements ComponentInterface {
           selection: data.selection,
           layerDataMap: data.layerDataMap,
           layerMetadataMap: data.layerMetadataMap,
+          yearRange: data.yearRange,
         };
         const containerElement = document.createElement('div');
         containerElement.classList.toggle('chart-container', true);
