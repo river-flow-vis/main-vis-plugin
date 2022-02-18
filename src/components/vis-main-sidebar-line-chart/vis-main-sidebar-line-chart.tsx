@@ -1,10 +1,6 @@
 import { Component, Host, h, ComponentInterface, Prop } from '@stencil/core';
-import * as d3 from 'd3';
+import { Line } from 'chartist';
 import { SidebarChartData } from '../../utils/data';
-
-const svgSize = 500;
-const axisSize = 10;
-const margin = 10;
 
 @Component({
   tag: 'vis-main-sidebar-line-chart',
@@ -14,72 +10,48 @@ const margin = 10;
 export class VisMainSidebarLineChart implements ComponentInterface {
   static readonly TAG_NAME = 'vis-main-sidebar-line-chart';
 
-  private axesGElement: SVGGElement;
-  private xAxis: d3.Axis<d3.NumberValue>;
-  private yAxis: d3.Axis<d3.NumberValue>;
-
   @Prop() data: SidebarChartData;
 
-  componentDidRender() {
-    this.axesGElement.innerHTML = '';
-    d3.select(this.axesGElement)
-      .append('g')
-      .attr('transform', `translate(0, ${svgSize - margin - axisSize})`)
-      .call(this.xAxis);
-    d3.select(this.axesGElement)
-      .append('g')
-      .attr('transform', `translate(${margin + axisSize}, 0)`)
-      .call(this.yAxis);
-  }
-
   render() {
-    let timeSeriesData = this.data?.layerDataMap?.get(this.data?.selection?.layer)?.[this.data?.selection?.id]?.data;
-    const minYear = this.data?.yearRange?.[0];
-    const maxYear = this.data?.yearRange?.[1];
-    timeSeriesData = Object.fromEntries(Object.entries(timeSeriesData).filter(([year]) => (!minYear || minYear <= +year) && (!maxYear || maxYear >= +year)));
-    const timeSeriesDataArray = Object.entries(timeSeriesData || {}).flatMap(([year, yearData]) =>
-      Object.entries(yearData || {}).map(([timestamp, data]) => ({
-        year,
-        month: +timestamp + 1,
-        value: data.average,
-      })),
-    );
-    const timeSeriesValues = timeSeriesDataArray.map(d => d.value);
-    const minValue = Math.min(...timeSeriesValues);
-    const maxValue = Math.max(...timeSeriesValues);
-
-    const xScale = d3
-      .scaleLinear()
-      .domain([0, timeSeriesDataArray.length - 1])
-      .range([margin + axisSize, svgSize - margin]);
-    const yScale = d3
-      .scaleLinear()
-      .domain([minValue, maxValue])
-      .range([svgSize - margin - axisSize, margin]);
-    this.xAxis = d3.axisBottom(xScale);
-    this.yAxis = d3.axisLeft(yScale);
-
-    const points = timeSeriesDataArray.map(({ value }, i) => [xScale(i), yScale(value)]);
-    const pathD = `M${points.map(point => point.join(' ')).join(' L')}`;
     return (
       <Host>
-        <div style={{ height: '2rem' }}>{this.data.title || 'Line Chart'}</div>
-        <svg height="100%" width="calc(100% - 2rem)" viewBox={`0 0 ${svgSize} ${svgSize}`} preserveAspectRatio="xMidYMid meet">
-          {points?.length && (
-            <g>
-              <path d={pathD} fill="none" stroke="black" stroke-width={2} />
-              <g>
-                {points.map(([x, y], i) => (
-                  <circle cx={x} cy={y} r={3}>
-                    <title>{`${timeSeriesDataArray[i].year}/${timeSeriesDataArray[i].month}: ${timeSeriesDataArray[i].value}`}</title>
-                  </circle>
-                ))}
-              </g>
-            </g>
-          )}
-          <g ref={el => (this.axesGElement = el as SVGGElement)}></g>
-        </svg>
+        <div>{this.data?.title}</div>
+        <div
+          ref={el => {
+            const variableAndTimeSeriesDataDict = this.obtainVariableAndTimeSeriesDataDict();
+            const data = Object.fromEntries(
+              Object.entries(variableAndTimeSeriesDataDict || {})?.map(([variable, variableData]) => [
+                variable,
+                Object.entries(variableData || {}).flatMap(([year, yearData]) =>
+                  Object.entries(yearData || {}).map(([timestamp, data]) => ({ year: +year, timestamp: +timestamp, value: data.average })),
+                ),
+              ]),
+            );
+            new Line(el, {
+              labels: Object.values(data)?.[0]?.map(({ year, timestamp }) => `${year}-${timestamp}`),
+              series: Object.values(data)?.map(d => d.map(({ value }) => value)),
+            });
+          }}
+        ></div>
       </Host>
     );
+  }
+
+  private obtainVariableAndTimeSeriesDataDict() {
+    const variableAndDataDict = this.data?.variables
+      ? Object.fromEntries(
+          [...this.data?.layerDataMap?.entries()].filter(([layer]) => this.data?.variables.includes(layer.variable)).map(([layer, data]) => [layer.variable, data]),
+        )
+      : Object.fromEntries([[this.data?.selection.layer.variable, this.data?.layerDataMap?.get(this.data?.selection?.layer)]]);
+    const variableAndTimeSeriesDataDict = Object.fromEntries(
+      Object.entries(variableAndDataDict).map(([variable, data]) => {
+        let timeSeriesData = data?.[this.data?.selection?.id]?.data;
+        const minYear = this.data?.yearRange?.[0];
+        const maxYear = this.data?.yearRange?.[1];
+        timeSeriesData = Object.fromEntries(Object.entries(timeSeriesData).filter(([year]) => (!minYear || minYear <= +year) && (!maxYear || maxYear >= +year)));
+        return [variable, timeSeriesData];
+      }),
+    );
+    return variableAndTimeSeriesDataDict;
   }
 }

@@ -44,6 +44,7 @@ export const mockData: MainData = {
           granularity: 'monthly',
           name: 'SidebarLineChart',
           title: 'Line',
+          variables: ['scalarSWE', 'scalarSenHeatTotal'],
         },
       ],
       width: '30rem',

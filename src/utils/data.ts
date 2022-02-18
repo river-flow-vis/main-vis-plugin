@@ -74,6 +74,7 @@ export interface SidebarChartData extends PluginData {
   layerDataMap?: Map<OverlayLayer, LayerData>;
   layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
   yearRange?: [number, number];
+  variables: string[];
   title?: string;
 }
 
