@@ -3,6 +3,8 @@ import * as d3 from 'd3';
 import { SidebarData, SidebarSelection } from '../../utils/data';
 import { objectsEqual } from '../../utils/object-equal';
 
+const scaleColor = d3.scaleOrdinal(d3.schemeAccent);
+
 @Component({
   tag: 'vis-main-sidebar',
   styleUrl: 'vis-main-sidebar.css',
@@ -16,7 +18,13 @@ export class VisMainSidebar implements ComponentInterface {
   @Element() hostElmenet: HTMLVisMainElement;
 
   @Prop() data: SidebarData;
+
   @Prop() pins: SidebarSelection[] = [];
+
+  @Watch('pins')
+  handlePinsChange(pins: SidebarSelection[]) {
+    this.data?.updatePinAndColorMap(new Map(pins.map((pin, i) => [pin, scaleColor(i.toString())])));
+  }
 
   @Watch('data')
   dataChanged(data: SidebarData) {
@@ -36,8 +44,6 @@ export class VisMainSidebar implements ComponentInterface {
   }
 
   render() {
-    const scaleColor = d3.scaleOrdinal(d3.schemeAccent);
-
     return (
       <Host>
         <div id="left-section">

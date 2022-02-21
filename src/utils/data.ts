@@ -90,6 +90,7 @@ export interface SidebarData extends PluginData {
   layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
   yearRange?: [number, number];
   updateSelection: (selection: SidebarSelection) => void;
+  updatePinAndColorMap: (pinAndColorMap: Map<SidebarSelection, string>) => void;
 }
 
 export interface SidebarSelection {
