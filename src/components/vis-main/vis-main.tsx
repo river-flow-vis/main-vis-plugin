@@ -296,7 +296,7 @@ export class VisMain implements ComponentInterface {
     this.overlayLayers.forEach(([layer, layerInfo]) =>
       layer.setStyle(({ properties }) => {
         let style;
-        const color = [...pinAndColorMap.entries()]?.find(([{ layer: ly, id }]) => ly === layerInfo && id === properties.id)?.[1] || defaultColor;
+        const color = [...this.pinAndColorMap.entries()]?.find(([{ layer: ly, id }]) => ly === layerInfo && id === properties.id)?.[1] || defaultColor;
         style = { color };
         return style;
       }),
