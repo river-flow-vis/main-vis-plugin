@@ -63,13 +63,16 @@ export const mockData: MainData = {
     {
       name: 'Legend',
       variable: 'scalarSWE',
+      width: '20rem',
     },
     {
       name: 'Legend',
       variable: 'scalarSenHeatTotal',
+      width: '20rem',
     },
     {
       name: 'TimeControl',
+      width: '20rem',
     },
   ],
   yearRange: [2010, 2012],

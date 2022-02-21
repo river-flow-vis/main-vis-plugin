@@ -10,17 +10,13 @@ export class VisMainLegend implements ComponentInterface {
   static readonly TAG_NAME = 'vis-main-legend';
 
   @Element() hostElement: HTMLVisMainLegendElement;
-  
+
   @Prop() data: LegendData;
 
-  @Watch('data')
-  dataChanged(data: LegendData) {
-    if (data.width) {
-      this.hostElement.style.setProperty('--width', data.width);
-    }
-  }
-
   render() {
+    if (this.data?.width) {
+      this.hostElement.style.setProperty('--width', this.data.width);
+    }
     return (
       <Host>
         <div style={{ padding: '1rem' }}>

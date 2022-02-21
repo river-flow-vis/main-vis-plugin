@@ -45,9 +45,6 @@ export class VisMainTimeControl implements ComponentInterface {
     if (data?.timestampsPerSecond) {
       this.timestampsPerSecond = data.timestampsPerSecond;
     }
-    if (data.width) {
-      this.hostElement.style.setProperty('--width', data.width);
-    }
   }
 
   componentWillLoad() {
@@ -57,6 +54,9 @@ export class VisMainTimeControl implements ComponentInterface {
   }
 
   render() {
+    if (this.data?.width) {
+      this.hostElement.style.setProperty('--width', this.data.width);
+    }
     return (
       <Host>
         <h3>{`Year: ${this.timestamp?.year}, Timestamp: ${this.timestamp?.timestamp}`}</h3>
