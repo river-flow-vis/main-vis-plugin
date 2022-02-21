@@ -1,4 +1,4 @@
-import { Component, Host, h, ComponentInterface, Prop, Element, Watch } from '@stencil/core';
+import { Component, Host, h, ComponentInterface, Prop, Element } from '@stencil/core';
 import { LegendData } from '../../utils/data';
 
 @Component({
