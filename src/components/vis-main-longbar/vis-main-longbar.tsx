@@ -1,4 +1,4 @@
-import { Component, Host, h, ComponentInterface, Prop, Element } from '@stencil/core';
+import { Component, Host, h, ComponentInterface, Prop, Element, Watch } from '@stencil/core';
 import { SidebarData } from '../../utils/data';
 
 @Component({
@@ -11,7 +11,16 @@ export class VisMainLongbar implements ComponentInterface {
   
   private containerElement: HTMLDivElement;
 
+  @Element() hostElement: HTMLVisMainLongbarElement;
+
   @Prop() data: SidebarData;
+
+  @Watch('data')
+  dataChanged(data: SidebarData) {
+    if (data.width) {
+      this.hostElement.style.setProperty('--width', data.width);
+    }
+  }
 
   componentDidUpdate() {
     this.updatePlgin();

@@ -1,6 +1,6 @@
 import { Component, Host, h, Prop, ComponentInterface, Watch } from '@stencil/core';
 import leaflet from 'leaflet';
-import { BaseLayer, DataIndex, GeoJSONData, LayerData, LayerMetadata, MainData, OverlayLayer, PluginData, PluginIndex, TimeControlData } from '../../utils/data';
+import { BaseLayer, DataIndex, GeoJSONData, LayerData, LayerMetadata, MainData, OverlayLayer, PluginData, PluginIndex, SidebarSelection, TimeControlData } from '../../utils/data';
 import { mockData } from './mock-data';
 
 @Component({
@@ -22,6 +22,7 @@ export class VisMain implements ComponentInterface {
   private pluginIndex: PluginIndex = {};
   private overlayLayers: [leaflet.GeoJSON, OverlayLayer][] = [];
   private layerControl = leaflet.control.layers();
+  private pinAndColorMap: Map<SidebarSelection, string>;
 
   @Prop() serverFileAPIPath = 'http://localhost:5000/files/';
 
@@ -120,6 +121,7 @@ export class VisMain implements ComponentInterface {
             layerMetadataMap: this.layerMetadataMap,
             pluginIndex: this.pluginIndex,
             updateSelection: ({ layer, id }) => this.selectPolygon(layer, id),
+            updatePinAndColorMap: pinAndColorMap => this.updatePinAndColorMap(pinAndColorMap),
           };
           return this.sidebarElement;
         };
@@ -145,6 +147,7 @@ export class VisMain implements ComponentInterface {
             layerMetadataMap: this.layerMetadataMap,
             pluginIndex: this.pluginIndex,
             updateSelection: ({ layer, id }) => this.selectPolygon(layer, id),
+            updatePinAndColorMap: pinAndColorMap => this.updatePinAndColorMap(pinAndColorMap),
           };
           return this.longbarElement;
         };
@@ -277,10 +280,24 @@ export class VisMain implements ComponentInterface {
             .getLayers()
             .find(polygon => polygon['feature'].properties.id === id)
             ?.['bringToFront']();
-          style = { color: 'red' };
+          style = { weight: '5' };
         } else {
-          style = { color: '#3388ff' };
+          style = { weight: '3' };
         }
+        return style;
+      }),
+    );
+  }
+
+  private updatePinAndColorMap(pinAndColorMap: Map<SidebarSelection, string>) {
+    this.pinAndColorMap = pinAndColorMap;
+
+    const defaultColor = '#3388ff';
+    this.overlayLayers.forEach(([layer, layerInfo]) =>
+      layer.setStyle(({ properties }) => {
+        let style;
+        const color = [...pinAndColorMap.entries()]?.find(([{ layer: ly, id }]) => ly === layerInfo && id === properties.id)?.[1] || defaultColor;
+        style = { color };
         return style;
       }),
     );

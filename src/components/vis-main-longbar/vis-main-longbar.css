@@ -1,4 +1,6 @@
 :host {
+  --width: 80rem;
+
   display: block;
-  width: 80rem;
+  width: var(--width);
 }

@@ -99,6 +99,7 @@ export interface SidebarSelection {
 }
 
 export interface LegendData extends PluginData {
+  width?: string;
   selection?: { layer: OverlayLayer; id: string | number };
   layerDataMap?: Map<OverlayLayer, LayerData>;
   variable?: string;
@@ -106,6 +107,7 @@ export interface LegendData extends PluginData {
 }
 
 export interface TimeControlData extends PluginData {
+  width?: string;
   yearRange: [number, number];
   layerDataMap?: Map<OverlayLayer, LayerData>;
   layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;

@@ -1,4 +1,4 @@
-import { Component, Host, h, ComponentInterface, Prop } from '@stencil/core';
+import { Component, Host, h, ComponentInterface, Prop, Element, Watch } from '@stencil/core';
 import { LegendData } from '../../utils/data';
 
 @Component({
@@ -8,8 +8,17 @@ import { LegendData } from '../../utils/data';
 })
 export class VisMainLegend implements ComponentInterface {
   static readonly TAG_NAME = 'vis-main-legend';
+
+  @Element() hostElement: HTMLVisMainLegendElement;
   
   @Prop() data: LegendData;
+
+  @Watch('data')
+  dataChanged(data: LegendData) {
+    if (data.width) {
+      this.hostElement.style.setProperty('--width', data.width);
+    }
+  }
 
   render() {
     return (

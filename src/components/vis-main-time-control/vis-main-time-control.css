@@ -1,6 +1,7 @@
 :host {
   display: block;
   padding: 0.5rem;
+  width: var(--width);
 }
 
 #timestamp-slider {

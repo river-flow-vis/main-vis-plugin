@@ -1,4 +1,4 @@
-import { Component, Host, h, ComponentInterface, Prop, State, Watch } from '@stencil/core';
+import { Component, Host, h, ComponentInterface, Prop, State, Watch, Element } from '@stencil/core';
 import { TimeControlData } from '../../utils/data';
 
 const MS_IN_SECOND = 1000;
@@ -13,6 +13,8 @@ export class VisMainTimeControl implements ComponentInterface {
 
   private timestamps: { year: string; timestamp: string }[];
   private animationTimer: NodeJS.Timer;
+
+  @Element() hostElement: HTMLVisMainTimeControlElement;
 
   @State() playing = false;
   @State() timestampsPerSecond = 2;
@@ -42,6 +44,9 @@ export class VisMainTimeControl implements ComponentInterface {
     }
     if (data?.timestampsPerSecond) {
       this.timestampsPerSecond = data.timestampsPerSecond;
+    }
+    if (data.width) {
+      this.hostElement.style.setProperty('--width', data.width);
     }
   }
 
