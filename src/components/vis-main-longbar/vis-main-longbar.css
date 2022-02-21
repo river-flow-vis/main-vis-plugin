@@ -3,4 +3,5 @@
 
   display: block;
   width: var(--width);
+  box-sizing: border-box;
 }
