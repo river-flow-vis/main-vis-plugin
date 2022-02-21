@@ -7,6 +7,8 @@ import { SidebarData } from '../../utils/data';
   shadow: true,
 })
 export class VisMainLongbar implements ComponentInterface {
+  static readonly TAG_NAME = 'vis-main-longbar';
+  
   private containerElement: HTMLDivElement;
 
   @Prop() data: SidebarData;
