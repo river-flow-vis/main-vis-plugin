@@ -27,10 +27,18 @@ export class VisMainSidebarLineChart implements ComponentInterface {
                 ),
               ]),
             );
-            new Line(el, {
-              labels: Object.values(data)?.[0]?.map(({ year, timestamp }) => `${year}-${timestamp}`),
-              series: Object.values(data)?.map(d => d.map(({ value }) => value)),
-            });
+            new Line(
+              el,
+              {
+                labels: Object.values(data)?.[0]?.map(({ year, timestamp }) => `${year}-${timestamp}`),
+                series: Object.values(data)?.map(d => d.map(({ value }) => value)),
+              },
+              {
+                axisX: {
+                  labelInterpolationFnc: value => (value.split('-')?.[1] === '0' ? value.split('-')?.[0] : ''),
+                },
+              },
+            );
           }}
         ></div>
       </Host>
