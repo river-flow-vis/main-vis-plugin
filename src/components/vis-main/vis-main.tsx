@@ -146,8 +146,7 @@ export class VisMain implements ComponentInterface {
             layerDataMap: this.layerDataMap,
             layerMetadataMap: this.layerMetadataMap,
             pluginIndex: this.pluginIndex,
-            updateSelection: ({ layer, id }) => this.selectPolygon(layer, id),
-            updatePinAndColorMap: pinAndColorMap => this.updatePinAndColorMap(pinAndColorMap),
+            idAndColorMap: new Map([...(this.pinAndColorMap?.entries() || [])].map(([{ id }, color]) => [id, color])),
           };
           return this.longbarElement;
         };
@@ -301,5 +300,7 @@ export class VisMain implements ComponentInterface {
         return style;
       }),
     );
+
+    this.longbarElement.data = { ...this.longbarElement.data, idAndColorMap: new Map([...(this.pinAndColorMap?.entries() || [])].map(([{ id }, color]) => [id, color])) };
   }
 }

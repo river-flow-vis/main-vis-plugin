@@ -34,7 +34,7 @@ export const mockData: MainData = {
       plugins: [
         {
           granularity: 'monthly',
-          name: 'SidebarLineChart',
+          name: 'LongbarLineChart',
           title: 'Line',
           variables: ['scalarSWE', 'scalarSenHeatTotal'],
         },

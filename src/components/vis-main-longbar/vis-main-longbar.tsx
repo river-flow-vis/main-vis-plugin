@@ -1,5 +1,5 @@
 import { Component, Host, h, ComponentInterface, Prop, Element, Watch } from '@stencil/core';
-import { SidebarData } from '../../utils/data';
+import { LongbarData } from '../../utils/data';
 
 @Component({
   tag: 'vis-main-longbar',
@@ -8,15 +8,15 @@ import { SidebarData } from '../../utils/data';
 })
 export class VisMainLongbar implements ComponentInterface {
   static readonly TAG_NAME = 'vis-main-longbar';
-  
+
   private containerElement: HTMLDivElement;
 
   @Element() hostElement: HTMLVisMainLongbarElement;
 
-  @Prop() data: SidebarData;
+  @Prop() data: LongbarData;
 
   @Watch('data')
-  dataChanged(data: SidebarData) {
+  dataChanged(data: LongbarData) {
     if (data.width) {
       this.hostElement.style.setProperty('--width', data.width);
     }
@@ -46,6 +46,7 @@ export class VisMainLongbar implements ComponentInterface {
         layerDataMap: this.data.layerDataMap,
         layerMetadataMap: this.data.layerMetadataMap,
         yearRange: this.data.yearRange,
+        idAndColorMap: this.data.idAndColorMap,
       };
       const containerElement = document.createElement('div');
       containerElement.classList.toggle('chart-container', true);

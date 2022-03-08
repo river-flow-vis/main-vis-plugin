@@ -68,6 +68,24 @@ export interface PluginData {
   [prop: string]: any;
 }
 
+export interface LongbarData extends PluginData {
+  width?: string;
+  layerDataMap?: Map<OverlayLayer, LayerData>;
+  layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
+  yearRange?: [number, number];
+  idAndColorMap: Map<string | number, string>;
+}
+
+export interface LongbarLineChartData extends PluginData {
+  granularity?: string;
+  idAndColorMap: Map<string | number, string>;
+  layerDataMap?: Map<OverlayLayer, LayerData>;
+  layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
+  yearRange?: [number, number];
+  variables: string[];
+  title?: string;
+}
+
 export interface SidebarChartData extends PluginData {
   granularity?: string;
   selection?: { layer: OverlayLayer; id: string | number };

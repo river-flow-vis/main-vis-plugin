@@ -56,7 +56,7 @@ export class VisMainSidebarLineChart implements ComponentInterface {
         let timeSeriesData = data?.[this.data?.selection?.id]?.data;
         const minYear = this.data?.yearRange?.[0];
         const maxYear = this.data?.yearRange?.[1];
-        timeSeriesData = Object.fromEntries(Object.entries(timeSeriesData).filter(([year]) => (!minYear || minYear <= +year) && (!maxYear || maxYear >= +year)));
+        timeSeriesData = Object.fromEntries(Object.entries(timeSeriesData || {}).filter(([year]) => (!minYear || minYear <= +year) && (!maxYear || maxYear >= +year)));
         return [variable, timeSeriesData];
       }),
     );

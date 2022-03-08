@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { LegendData, MainData, SidebarChartData, SidebarData, SidebarMetadataData, SidebarSelection, TimeControlData } from "./utils/data";
+import { LegendData, LongbarData, LongbarLineChartData, MainData, SidebarChartData, SidebarData, SidebarMetadataData, SidebarSelection, TimeControlData } from "./utils/data";
 export namespace Components {
     interface VisMain {
         "data": MainData;
@@ -15,7 +15,10 @@ export namespace Components {
         "data": LegendData;
     }
     interface VisMainLongbar {
-        "data": SidebarData;
+        "data": LongbarData;
+    }
+    interface VisMainLongbarLineChart {
+        "data": LongbarLineChartData;
     }
     interface VisMainSidebar {
         "data": SidebarData;
@@ -53,6 +56,12 @@ declare global {
         prototype: HTMLVisMainLongbarElement;
         new (): HTMLVisMainLongbarElement;
     };
+    interface HTMLVisMainLongbarLineChartElement extends Components.VisMainLongbarLineChart, HTMLStencilElement {
+    }
+    var HTMLVisMainLongbarLineChartElement: {
+        prototype: HTMLVisMainLongbarLineChartElement;
+        new (): HTMLVisMainLongbarLineChartElement;
+    };
     interface HTMLVisMainSidebarElement extends Components.VisMainSidebar, HTMLStencilElement {
     }
     var HTMLVisMainSidebarElement: {
@@ -87,6 +96,7 @@ declare global {
         "vis-main": HTMLVisMainElement;
         "vis-main-legend": HTMLVisMainLegendElement;
         "vis-main-longbar": HTMLVisMainLongbarElement;
+        "vis-main-longbar-line-chart": HTMLVisMainLongbarLineChartElement;
         "vis-main-sidebar": HTMLVisMainSidebarElement;
         "vis-main-sidebar-bar-chart": HTMLVisMainSidebarBarChartElement;
         "vis-main-sidebar-line-chart": HTMLVisMainSidebarLineChartElement;
@@ -103,7 +113,10 @@ declare namespace LocalJSX {
         "data"?: LegendData;
     }
     interface VisMainLongbar {
-        "data"?: SidebarData;
+        "data"?: LongbarData;
+    }
+    interface VisMainLongbarLineChart {
+        "data"?: LongbarLineChartData;
     }
     interface VisMainSidebar {
         "data"?: SidebarData;
@@ -125,6 +138,7 @@ declare namespace LocalJSX {
         "vis-main": VisMain;
         "vis-main-legend": VisMainLegend;
         "vis-main-longbar": VisMainLongbar;
+        "vis-main-longbar-line-chart": VisMainLongbarLineChart;
         "vis-main-sidebar": VisMainSidebar;
         "vis-main-sidebar-bar-chart": VisMainSidebarBarChart;
         "vis-main-sidebar-line-chart": VisMainSidebarLineChart;
@@ -139,6 +153,7 @@ declare module "@stencil/core" {
             "vis-main": LocalJSX.VisMain & JSXBase.HTMLAttributes<HTMLVisMainElement>;
             "vis-main-legend": LocalJSX.VisMainLegend & JSXBase.HTMLAttributes<HTMLVisMainLegendElement>;
             "vis-main-longbar": LocalJSX.VisMainLongbar & JSXBase.HTMLAttributes<HTMLVisMainLongbarElement>;
+            "vis-main-longbar-line-chart": LocalJSX.VisMainLongbarLineChart & JSXBase.HTMLAttributes<HTMLVisMainLongbarLineChartElement>;
             "vis-main-sidebar": LocalJSX.VisMainSidebar & JSXBase.HTMLAttributes<HTMLVisMainSidebarElement>;
             "vis-main-sidebar-bar-chart": LocalJSX.VisMainSidebarBarChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarBarChartElement>;
             "vis-main-sidebar-line-chart": LocalJSX.VisMainSidebarLineChart & JSXBase.HTMLAttributes<HTMLVisMainSidebarLineChartElement>;
