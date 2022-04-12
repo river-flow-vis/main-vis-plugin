@@ -97,6 +97,16 @@ export class VisMain implements ComponentInterface {
       geoJSONLayer.addTo(this.map);
       this.layerControl.addOverlay(geoJSONLayer, layerInfo.name);
     }
+
+    const custom = leaflet.imageOverlay(
+      `${this.serverFileAPIPath}public/tiles/tile_0_0_0.png`,
+      [
+        [51.0625, -140.4375],
+        [70.4375, -102.0625],
+      ],
+      { opacity: 0.5 },
+    );
+    this.layerControl.addOverlay(custom, 'Custom');
   }
 
   private async initializeMap() {
@@ -240,6 +250,12 @@ export class VisMain implements ComponentInterface {
         attribution: attributionSetelitte,
       });
     }
+    // TODO temp use
+    mapLayerDict['Custom'] = leaflet.tileLayer(`${this.serverFileAPIPath}public/tiles/tile_{z}_{x}_{y}.png`, {
+      id: 'custom',
+      attribution: '',
+    });
+
     mapLayerDict[baseLayers[0]]?.addTo(map);
     this.layerControl.addTo(map);
     Object.entries(mapLayerDict).forEach(([name, layer]) => this.layerControl.addBaseLayer(layer, name));
