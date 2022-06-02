@@ -29,7 +29,7 @@
 }
 
 #right-section.collapsed {
-  width: 0;
+  max-width: 0;
 }
 
 #left-section > button {

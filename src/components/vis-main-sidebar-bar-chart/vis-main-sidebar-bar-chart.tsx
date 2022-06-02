@@ -29,14 +29,18 @@ export class VisMainSidebarBarChart implements ComponentInterface {
 
     return (
       <Host>
-        <div style={{ height: '2rem' }}>{this.data.title || 'Bar Chart'}</div>
-        <svg height="100%" width="calc(100% - 2rem)" viewBox={`0 0 ${svgSize} ${svgSize}`} preserveAspectRatio="xMidYMid meet">
-          {timeSeriesDataArray.map(({ year, month, value }, i) => (
-            <rect x={i * barWidth} width={barWidth} y={svgSize * (1 - value / (maxValue - minValue))} height={(svgSize * value) / (maxValue - minValue)} fill="blue">
-              <title>{`${year}/${month}: ${value}`}</title>
-            </rect>
-          ))}
-        </svg>
+        <vis-main-collapse>
+          <div slot="header" style={{ height: '2rem' }}>
+            {this.data.title || 'Bar Chart'}
+          </div>
+          <svg height="100%" width="calc(100% - 2rem)" viewBox={`0 0 ${svgSize} ${svgSize}`} preserveAspectRatio="xMidYMid meet">
+            {timeSeriesDataArray.map(({ year, month, value }, i) => (
+              <rect x={i * barWidth} width={barWidth} y={svgSize * (1 - value / (maxValue - minValue))} height={(svgSize * value) / (maxValue - minValue)} fill="blue">
+                <title>{`${year}/${month}: ${value}`}</title>
+              </rect>
+            ))}
+          </svg>
+        </vis-main-collapse>
       </Host>
     );
   }

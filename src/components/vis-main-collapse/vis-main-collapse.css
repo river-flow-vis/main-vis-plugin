@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+
+#collapse-toggle {
+  display: none;
+}
+
+#collapse-toggle:checked ~ [part='content'] {
+  max-height: 0;
+}
+
+[part='content'] {
+  overflow: hidden;
+  transition: max-height 0.25s;
+}
+
+[part='header'] {
+  cursor: pointer;
+}
+
+[part='header']::before {
+  content: ' ';
+  display: inline-block;
+
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid currentColor;
+
+  vertical-align: middle;
+  margin-right: 0.7rem;
+  transform: translateY(-2px) rotate(90deg);
+  transition: transform 0.25s;
+}
+
+#collapse-toggle:checked ~ [part='header']::before {
+  transform: translateY(-2px);
+}
+
+::slotted([slot='header']) {
+  display: inline-block;
+}

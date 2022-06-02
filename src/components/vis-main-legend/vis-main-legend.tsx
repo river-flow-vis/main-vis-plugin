@@ -19,15 +19,15 @@ export class VisMainLegend implements ComponentInterface {
     }
     return (
       <Host>
-        <div style={{ padding: '1rem' }}>
-          <h3>{this.data.variable}</h3>
+        <vis-main-collapse style={{ padding: '1rem' }}>
+          <h3 slot="header">{this.data.variable}</h3>
           {this.data.colorMap?.map(([min, max, color, name]) => (
             <div>
               <div style={{ height: '1em', width: '1em', background: color, display: 'inline-block', marginRight: '1em' }}></div>
               {name || `${min} to ${max}`}
             </div>
           ))}
-        </div>
+        </vis-main-collapse>
       </Host>
     );
   }

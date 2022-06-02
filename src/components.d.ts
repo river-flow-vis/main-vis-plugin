@@ -11,6 +11,9 @@ export namespace Components {
         "data": MainData;
         "serverFileAPIPath": string;
     }
+    interface VisMainCollapse {
+        "collapsed": boolean;
+    }
     interface VisMainLegend {
         "data": LegendData;
     }
@@ -43,6 +46,12 @@ declare global {
     var HTMLVisMainElement: {
         prototype: HTMLVisMainElement;
         new (): HTMLVisMainElement;
+    };
+    interface HTMLVisMainCollapseElement extends Components.VisMainCollapse, HTMLStencilElement {
+    }
+    var HTMLVisMainCollapseElement: {
+        prototype: HTMLVisMainCollapseElement;
+        new (): HTMLVisMainCollapseElement;
     };
     interface HTMLVisMainLegendElement extends Components.VisMainLegend, HTMLStencilElement {
     }
@@ -94,6 +103,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "vis-main": HTMLVisMainElement;
+        "vis-main-collapse": HTMLVisMainCollapseElement;
         "vis-main-legend": HTMLVisMainLegendElement;
         "vis-main-longbar": HTMLVisMainLongbarElement;
         "vis-main-longbar-line-chart": HTMLVisMainLongbarLineChartElement;
@@ -108,6 +118,9 @@ declare namespace LocalJSX {
     interface VisMain {
         "data"?: MainData;
         "serverFileAPIPath"?: string;
+    }
+    interface VisMainCollapse {
+        "collapsed"?: boolean;
     }
     interface VisMainLegend {
         "data"?: LegendData;
@@ -136,6 +149,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "vis-main": VisMain;
+        "vis-main-collapse": VisMainCollapse;
         "vis-main-legend": VisMainLegend;
         "vis-main-longbar": VisMainLongbar;
         "vis-main-longbar-line-chart": VisMainLongbarLineChart;
@@ -151,6 +165,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "vis-main": LocalJSX.VisMain & JSXBase.HTMLAttributes<HTMLVisMainElement>;
+            "vis-main-collapse": LocalJSX.VisMainCollapse & JSXBase.HTMLAttributes<HTMLVisMainCollapseElement>;
             "vis-main-legend": LocalJSX.VisMainLegend & JSXBase.HTMLAttributes<HTMLVisMainLegendElement>;
             "vis-main-longbar": LocalJSX.VisMainLongbar & JSXBase.HTMLAttributes<HTMLVisMainLongbarElement>;
             "vis-main-longbar-line-chart": LocalJSX.VisMainLongbarLineChart & JSXBase.HTMLAttributes<HTMLVisMainLongbarLineChartElement>;

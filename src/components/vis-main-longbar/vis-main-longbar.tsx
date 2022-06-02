@@ -29,7 +29,10 @@ export class VisMainLongbar implements ComponentInterface {
   render() {
     return (
       <Host>
-        <div ref={el => (this.containerElement = el)}></div>
+        <vis-main-collapse>
+          <h3 slot="header">Some header go here</h3>
+          <div ref={el => (this.containerElement = el)}></div>
+        </vis-main-collapse>
       </Host>
     );
   }

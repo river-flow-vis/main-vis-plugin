@@ -40,7 +40,7 @@ export class VisMainSidebar implements ComponentInterface {
   @State() collapsed = true;
 
   componentDidRender() {
-    this.updatePlugins(this.data);
+    this.dataChanged(this.data);
   }
 
   render() {

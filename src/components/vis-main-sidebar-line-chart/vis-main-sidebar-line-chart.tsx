@@ -12,35 +12,41 @@ export class VisMainSidebarLineChart implements ComponentInterface {
 
   @Prop() data: SidebarChartData;
 
+  componentDidLoad() {}
+
   render() {
     return (
       <Host>
-        <div>{this.data?.title}</div>
-        <div
-          ref={el => {
-            const variableAndTimeSeriesDataDict = this.obtainVariableAndTimeSeriesDataDict();
-            const data = Object.fromEntries(
-              Object.entries(variableAndTimeSeriesDataDict || {})?.map(([variable, variableData]) => [
-                variable,
-                Object.entries(variableData || {}).flatMap(([year, yearData]) =>
-                  Object.entries(yearData || {}).map(([timestamp, data]) => ({ year: +year, timestamp: +timestamp, value: data.average })),
-                ),
-              ]),
-            );
-            new Line(
-              el,
-              {
-                labels: Object.values(data)?.[0]?.map(({ year, timestamp }) => `${year}-${timestamp}`),
-                series: Object.values(data)?.map(d => d.map(({ value }) => value)),
-              },
-              {
-                axisX: {
-                  labelInterpolationFnc: value => (value.split('-')?.[1] === '0' ? value.split('-')?.[0] : ''),
-                },
-              },
-            );
-          }}
-        ></div>
+        <vis-main-collapse>
+          <div slot="header">{this.data?.title}</div>
+          <div
+            ref={el => {
+              const variableAndTimeSeriesDataDict = this.obtainVariableAndTimeSeriesDataDict();
+              const data = Object.fromEntries(
+                Object.entries(variableAndTimeSeriesDataDict || {})?.map(([variable, variableData]) => [
+                  variable,
+                  Object.entries(variableData || {}).flatMap(([year, yearData]) =>
+                    Object.entries(yearData || {}).map(([timestamp, data]) => ({ year: +year, timestamp: +timestamp, value: data.average })),
+                  ),
+                ]),
+              );
+              setTimeout(() => {
+                new Line(
+                  el,
+                  {
+                    labels: Object.values(data)?.[0]?.map(({ year, timestamp }) => `${year}-${timestamp}`),
+                    series: Object.values(data)?.map(d => d.map(({ value }) => value)),
+                  },
+                  {
+                    axisX: {
+                      labelInterpolationFnc: value => (value.split('-')?.[1] === '0' ? value.split('-')?.[0] : ''),
+                    },
+                  },
+                );
+              }, 100 /* TODO this is a temp fix */);
+            }}
+          ></div>
+        </vis-main-collapse>
       </Host>
     );
   }

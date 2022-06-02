@@ -59,41 +59,44 @@ export class VisMainTimeControl implements ComponentInterface {
     }
     return (
       <Host>
-        <h3>{`Year: ${this.timestamp?.year}, Timestamp: ${this.timestamp?.timestamp}`}</h3>
-        <input
-          id="timestamp-slider"
-          type="range"
-          min={0}
-          max={this.timestamps.length}
-          value={this.timestamps.findIndex(t => t.year === this.timestamp.year && t.timestamp === this.timestamp.timestamp)}
-          onInput={event => {
-            const value = (event.currentTarget as HTMLInputElement).value;
-            this.timestamp = this.timestamps[+value];
-          }}
-        />
-        <button
-          disabled={this.playing}
-          onClick={() => {
-            clearInterval(this.animationTimer);
-            this.animationTimer = setInterval(() => this.play(), MS_IN_SECOND / this.timestampsPerSecond);
-            this.playing = true;
-          }}
-        >
-          Play
-        </button>
-        <button
-          disabled={!this.playing}
-          onClick={() => {
-            clearInterval(this.animationTimer);
-            this.playing = false;
-          }}
-        >
-          Pause
-        </button>
-        <div>
-          <label>Timestamps/Second</label>
-          <input type="number" value={this.timestampsPerSecond} onChange={event => (this.timestampsPerSecond = +(event.currentTarget as HTMLInputElement).value)} />
-        </div>
+        <vis-main-collapse>
+          <h3 slot="header">Time Control</h3>
+          <h3>{`Year: ${this.timestamp?.year}, Timestamp: ${this.timestamp?.timestamp}`}</h3>
+          <input
+            id="timestamp-slider"
+            type="range"
+            min={0}
+            max={this.timestamps.length}
+            value={this.timestamps.findIndex(t => t.year === this.timestamp.year && t.timestamp === this.timestamp.timestamp)}
+            onInput={event => {
+              const value = (event.currentTarget as HTMLInputElement).value;
+              this.timestamp = this.timestamps[+value];
+            }}
+          />
+          <button
+            disabled={this.playing}
+            onClick={() => {
+              clearInterval(this.animationTimer);
+              this.animationTimer = setInterval(() => this.play(), MS_IN_SECOND / this.timestampsPerSecond);
+              this.playing = true;
+            }}
+          >
+            Play
+          </button>
+          <button
+            disabled={!this.playing}
+            onClick={() => {
+              clearInterval(this.animationTimer);
+              this.playing = false;
+            }}
+          >
+            Pause
+          </button>
+          <div>
+            <label>Timestamps/Second</label>
+            <input type="number" value={this.timestampsPerSecond} onChange={event => (this.timestampsPerSecond = +(event.currentTarget as HTMLInputElement).value)} />
+          </div>
+        </vis-main-collapse>
       </Host>
     );
   }
