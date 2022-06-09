@@ -9,8 +9,21 @@
 
 | Property | Attribute | Description | Type          | Default     |
 | -------- | --------- | ----------- | ------------- | ----------- |
-| `data`   | --        |             | `SidebarData` | `undefined` |
+| `data`   | --        |             | `LongbarData` | `undefined` |
 
+
+## Dependencies
+
+### Depends on
+
+- [vis-main-collapse](../vis-main-collapse)
+
+### Graph
+```mermaid
+graph TD;
+  vis-main-longbar --> vis-main-collapse
+  style vis-main-longbar fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 
