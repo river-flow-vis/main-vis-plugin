@@ -6,6 +6,8 @@ import { Component, Host, h, ComponentInterface, Prop } from '@stencil/core';
   shadow: true,
 })
 export class VisMainCollapse implements ComponentInterface {
+  static readonly TAG_NAME = 'vis-main-collapse';
+
   @Prop() collapsed: boolean;
 
   render() {
