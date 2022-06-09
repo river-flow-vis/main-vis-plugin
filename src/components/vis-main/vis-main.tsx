@@ -111,10 +111,6 @@ export class VisMain implements ComponentInterface {
               break;
             case 'scatter':
               {
-                const scaleValue = d3
-                  .scaleLinear()
-                  .domain([d3.min(values.filter(d => d >= 0)), d3.max(values)])
-                  .range([0, 1]);
                 const scaleColor = d3
                   .scaleLinear()
                   .domain([d3.min(values.filter(d => d >= 0)), d3.max(values)])
