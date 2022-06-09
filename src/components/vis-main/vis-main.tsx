@@ -1,7 +1,21 @@
 import { Component, Host, h, Prop, ComponentInterface, Watch } from '@stencil/core';
 import leaflet from 'leaflet';
-import { BaseLayer, DataIndex, GeoJSONData, LayerData, LayerMetadata, MainData, OverlayLayer, PluginData, PluginIndex, SidebarSelection, TimeControlData } from '../../utils/data';
+import {
+  BaseLayer,
+  DataIndex,
+  GeoJSONData,
+  GeoJSONFeature,
+  LayerData,
+  LayerMetadata,
+  MainData,
+  OverlayLayer,
+  PluginData,
+  PluginIndex,
+  SidebarSelection,
+  TimeControlData,
+} from '../../utils/data';
 import { mockData } from './mock-data';
+import * as d3 from 'd3';
 
 @Component({
   tag: 'vis-main',
@@ -57,50 +71,135 @@ export class VisMain implements ComponentInterface {
 
   private async initializeOverlayLayers(data: MainData) {
     for (const layerInfo of data.overlayLayers) {
-      let response = await fetch(this.serverFileAPIPath + layerInfo.dataIndexUrl);
-      const dataIndex = (await response.json()) as DataIndex;
-      const dataIndexDirectoryPath = layerInfo.dataIndexUrl.split('/').slice(0, -1).join('/') + '/';
-      response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + dataIndex.geoJSONUrl);
-      const geoJSONData = (await response.json()) as GeoJSONData;
-      const layerIds = geoJSONData.features.map(({ properties }) => properties.id);
-      for (const id of layerIds) {
-        const layerDataUrl = dataIndex.dataUrlTemplate.replace('{VARIABLE}', layerInfo.variable).replace('{GRANULARITY}', 'monthly').replace('{ID}', id);
-        let response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + layerDataUrl);
-        const layerDataForId = await response.json();
-        let layerData = this.layerDataMap.get(layerInfo);
-        if (!layerData) {
-          this.layerDataMap.set(layerInfo, {});
-          layerData = this.layerDataMap.get(layerInfo);
-        }
-        layerData[id] = layerDataForId;
+      switch (layerInfo.type) {
+        case 'matrix':
+          let response = await fetch(this.serverFileAPIPath + layerInfo.dataIndexUrl);
+          const dataIndex = (await response.json()) as DataIndex;
+          response = await fetch(this.serverFileAPIPath + layerInfo.dataIndexUrl.split('/').slice(0, -1).join('/') + '/' + dataIndex?.matrixDataUrl);
+          const matrix = d3.csvParseRows(await response.text());
+          const yCount = matrix.length;
+          const xCount = matrix[0].length;
+          const values = matrix.flatMap(line => line.map(d => +d));
+          const scaleX = d3.scaleLinear().domain([0, xCount]).range([dataIndex.minLongitude, dataIndex.maxLongitude]);
+          const scaleY = d3.scaleLinear().domain([0, yCount]).range([dataIndex.minLatitude, dataIndex.maxLatitude]);
 
-        const layerMetadataUrl = dataIndex.metadataUrlTemplate.replace('{ID}', id);
-        response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + layerMetadataUrl);
-        const layerMetadataForId = await response.json();
-        let layerMetadata = this.layerMetadataMap.get(layerInfo);
-        if (!layerMetadata) {
-          this.layerMetadataMap.set(layerInfo, {});
-          layerMetadata = this.layerMetadataMap.get(layerInfo);
-        }
-        layerMetadata[id] = layerMetadataForId;
+          switch (layerInfo.plot) {
+            case 'contour':
+              {
+                const contours = d3.contours().size([xCount, yCount]).thresholds(layerInfo.thresholds)(values);
+                debugger;
+                function ndArrayChangeValue(arr: any[], fn: (value: any) => any, fn2: (value: any) => any) {
+                  return arr.map((item, i) => (Array.isArray(item) ? ndArrayChangeValue(item, fn, fn2) : i === 0 ? fn(item) : fn2(item)));
+                }
+
+                contours.forEach(d => (d.coordinates = ndArrayChangeValue(d.coordinates, scaleX, scaleY)));
+                const defaultStyle = {
+                  fillOpacity: 5,
+                  weight: 0,
+                };
+                const geoJSONLayer = leaflet.geoJSON({ type: 'FeatureCollection', features: contours.map(g => ({ type: 'Feature', geometry: g })) } as any, {
+                  style: ({ geometry }) => ({
+                    ...defaultStyle,
+                    color: layerInfo.colors[geometry['value']],
+                  }),
+                  onEachFeature: ({ geometry }, layer) => {
+                    layer.on('click', () => alert(geometry['value']));
+                  },
+                });
+                this.layerControl.addOverlay(geoJSONLayer, 'contours');
+              }
+              break;
+            case 'scatter':
+              {
+                const scaleValue = d3
+                  .scaleLinear()
+                  .domain([d3.min(values.filter(d => d >= 0)), d3.max(values)])
+                  .range([0, 1]);
+                const scaleColor = d3
+                  .scaleLinear()
+                  .domain([d3.min(values.filter(d => d >= 0)), d3.max(values)])
+                  .range(['hsla(180, 50%, 50%, 0', 'hsla(180, 50%, 50%, 1'] as any);
+                const geoJson = {
+                  type: 'FeatureCollection',
+                  features: matrix.flatMap((row, y) =>
+                    row.map(
+                      (value, x) =>
+                        ({
+                          type: 'Feature',
+                          properties: {
+                            value,
+                          },
+                          geometry: {
+                            type: 'Point',
+                            coordinates: [scaleX(x), scaleY(y)],
+                          },
+                        } as GeoJSONFeature),
+                    ),
+                  ),
+                };
+                const geoJSONLayer = leaflet.geoJSON(geoJson as any, {
+                  pointToLayer: (feature, latlng) =>
+                    new leaflet.Circle(latlng, {
+                      color: scaleColor(+feature.properties.value) as any,
+                    }),
+                });
+                this.layerControl.addOverlay(geoJSONLayer, 'scatter');
+              }
+              break;
+          }
+          break;
+        case 'shape':
+        default:
+          await this.initializeShapeOverlayLayer(layerInfo);
+          break;
       }
-      const defaultStyle = {
-        fillOpacity: 0.5,
-      };
-      const geoJSONLayer = leaflet.geoJSON(geoJSONData, {
-        style: defaultStyle,
-        onEachFeature: (feature, layer) => {
-          layer.on('click', () => this.selectPolygon(layerInfo, feature.properties.id));
-        },
-      });
-      this.overlayLayers.push([geoJSONLayer, layerInfo]);
-      geoJSONLayer.addTo(this.map);
-      this.layerControl.addOverlay(geoJSONLayer, layerInfo.name);
     }
   }
 
+  private async initializeShapeOverlayLayer(layerInfo: OverlayLayer) {
+    let response = await fetch(this.serverFileAPIPath + layerInfo.dataIndexUrl);
+    const dataIndex = (await response.json()) as DataIndex;
+    const dataIndexDirectoryPath = layerInfo.dataIndexUrl.split('/').slice(0, -1).join('/') + '/';
+    response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + dataIndex.geoJSONUrl);
+    const geoJSONData = (await response.json()) as GeoJSONData;
+    const layerIds = geoJSONData.features.map(({ properties }) => properties.id);
+    for (const id of layerIds) {
+      const layerDataUrl = dataIndex.dataUrlTemplate.replace('{VARIABLE}', layerInfo.variable).replace('{GRANULARITY}', 'monthly').replace('{ID}', id);
+      let response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + layerDataUrl);
+      const layerDataForId = await response.json();
+      let layerData = this.layerDataMap.get(layerInfo);
+      if (!layerData) {
+        this.layerDataMap.set(layerInfo, {});
+        layerData = this.layerDataMap.get(layerInfo);
+      }
+      layerData[id] = layerDataForId;
+
+      const layerMetadataUrl = dataIndex.metadataUrlTemplate.replace('{ID}', id);
+      response = await fetch(this.serverFileAPIPath + dataIndexDirectoryPath + layerMetadataUrl);
+      const layerMetadataForId = await response.json();
+      let layerMetadata = this.layerMetadataMap.get(layerInfo);
+      if (!layerMetadata) {
+        this.layerMetadataMap.set(layerInfo, {});
+        layerMetadata = this.layerMetadataMap.get(layerInfo);
+      }
+      layerMetadata[id] = layerMetadataForId;
+    }
+    const defaultStyle = {
+      fillOpacity: 0.5,
+    };
+    const geoJSONLayer = leaflet.geoJSON(geoJSONData, {
+      style: defaultStyle,
+      onEachFeature: (feature, layer) => {
+        layer.on('click', () => this.selectPolygon(layerInfo, feature.properties.id));
+      },
+    });
+    this.overlayLayers.push([geoJSONLayer, layerInfo]);
+    geoJSONLayer.addTo(this.map);
+    this.layerControl.addOverlay(geoJSONLayer, layerInfo.name);
+  }
+
   private async initializeMap() {
-    this.map = leaflet.map(this.mapElement).setView([51.312588, -116.021118], 10);
+    this.map = leaflet.map(this.mapElement, { preferCanvas: true }).setView([51.312588, -116.021118], 10);
     this.initializeBaseLayers(this.map, this.data.baseLayers);
     this.map.zoomControl.setPosition('topright');
   }

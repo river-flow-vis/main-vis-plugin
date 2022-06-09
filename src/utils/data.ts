@@ -27,9 +27,14 @@ export interface PluginIndex {
 }
 
 export interface DataIndex {
-  geoJSONUrl: string;
-  metadataUrlTemplate: string;
-  dataUrlTemplate: string;
+  geoJSONUrl?: string;
+  metadataUrlTemplate?: string;
+  dataUrlTemplate?: string;
+  matrixDataUrl?: string;
+  minLatitude?: number;
+  maxLatitude?: number;
+  minLongitude?: number;
+  maxLongitude?: number;
 }
 
 export interface LayerMetadata {
@@ -55,10 +60,15 @@ export interface LayerData {
 }
 
 export interface OverlayLayer {
+  type?: 'shape' | 'matrix';
   name: string;
-  dataIndexUrl: string;
-  colorMap: [number, number, string, string?][];
-  variable: string;
+  dataIndexUrl?: string;
+  colorMap?: [number, number, string, string?][];
+  variable?: string;
+  plot?: 'scatter' | 'contour';
+  thresholds?: number | number[];
+  colors?: { [value: number]: string };
+  colorRange?: [string, string];
 }
 
 export interface PluginData {
