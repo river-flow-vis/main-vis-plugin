@@ -83,12 +83,12 @@ export interface LongbarData extends PluginData {
   layerDataMap?: Map<OverlayLayer, LayerData>;
   layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
   yearRange?: [number, number];
-  idAndColorMap: Map<string | number, string>;
+  pinAndColorMap: Map<SidebarSelection, string>
 }
 
 export interface LongbarLineChartData extends PluginData {
   granularity?: string;
-  idAndColorMap: Map<string | number, string>;
+  pinAndColorMap: Map<SidebarSelection, string>
   layerDataMap?: Map<OverlayLayer, LayerData>;
   layerMetadataMap?: Map<OverlayLayer, LayerMetadata>;
   yearRange?: [number, number];

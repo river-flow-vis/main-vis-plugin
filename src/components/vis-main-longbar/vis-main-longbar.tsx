@@ -49,7 +49,7 @@ export class VisMainLongbar implements ComponentInterface {
         layerDataMap: this.data.layerDataMap,
         layerMetadataMap: this.data.layerMetadataMap,
         yearRange: this.data.yearRange,
-        idAndColorMap: this.data.idAndColorMap,
+        pinAndColorMap: this.data.pinAndColorMap,
       };
       const containerElement = document.createElement('div');
       containerElement.classList.toggle('chart-container', true);

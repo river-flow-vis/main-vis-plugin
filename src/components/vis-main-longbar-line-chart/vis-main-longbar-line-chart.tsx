@@ -18,7 +18,7 @@ export class VisMainLongbarLineChart implements ComponentInterface {
     return (
       <Host>
         <div>{this.data?.title}</div>
-        <select onChange={({ currentTarget }) => (this.variable = (currentTarget as HTMLSelectElement).value)}>
+        <select ref={el => (this.variable = el.value)} onChange={({ currentTarget }) => (this.variable = (currentTarget as HTMLSelectElement).value)}>
           {this.data?.variables?.map(variable => (
             <option value={variable}>{variable}</option>
           ))}
@@ -48,7 +48,7 @@ export class VisMainLongbarLineChart implements ComponentInterface {
             lineChart.on('draw', context => {
               if (context.type === 'line' || context.type === 'point') {
                 context.element.attr({
-                  style: `stroke: ${[...this.data?.idAndColorMap.values()]?.[context.seriesIndex]}`,
+                  style: `stroke: ${[...this.data?.pinAndColorMap.values()]?.[context.seriesIndex]}`,
                 });
               }
             });
@@ -59,7 +59,7 @@ export class VisMainLongbarLineChart implements ComponentInterface {
   }
 
   private obtainVariableAndTimeSeriesDataDictForLocations() {
-    return [...this.data?.idAndColorMap?.keys()]?.map(id => this.obtainVariableAndTimeSeriesDataDict(id));
+    return [...this.data?.pinAndColorMap?.keys()]?.map(({ layer, id }) => (layer.variable === this.variable ? this.obtainVariableAndTimeSeriesDataDict(id) : {}));
   }
 
   private obtainVariableAndTimeSeriesDataDict(id: string | number) {

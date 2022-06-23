@@ -30,20 +30,22 @@ export class VisMainSidebarLineChart implements ComponentInterface {
                   ),
                 ]),
               );
-              setTimeout(() => {
-                new Line(
-                  el,
-                  {
-                    labels: Object.values(data)?.[0]?.map(({ year, timestamp }) => `${year}-${timestamp}`),
-                    series: Object.values(data)?.map(d => d.map(({ value }) => value)),
-                  },
-                  {
-                    axisX: {
-                      labelInterpolationFnc: value => (value.split('-')?.[1] === '0' ? value.split('-')?.[0] : ''),
+              if (this.data?.variables?.includes(this.data.selection?.layer?.variable)) {
+                setTimeout(() => {
+                  new Line(
+                    el,
+                    {
+                      labels: Object.values(data)?.[0]?.map(({ year, timestamp }) => `${year}-${timestamp}`),
+                      series: Object.values(data)?.map(d => d.map(({ value }) => value)),
                     },
-                  },
-                );
-              }, 100 /* TODO this is a temp fix */);
+                    {
+                      axisX: {
+                        labelInterpolationFnc: value => (value.split('-')?.[1] === '0' ? value.split('-')?.[0] : ''),
+                      },
+                    },
+                  );
+                }, 100 /* TODO this is a temp fix */);
+              }
             }}
           ></div>
         </vis-main-collapse>

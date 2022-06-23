@@ -87,7 +87,6 @@ export class VisMain implements ComponentInterface {
             case 'contour':
               {
                 const contours = d3.contours().size([xCount, yCount]).thresholds(layerInfo.thresholds)(values);
-                debugger;
                 function ndArrayChangeValue(arr: any[], fn: (value: any) => any, fn2: (value: any) => any) {
                   return arr.map((item, i) => (Array.isArray(item) ? ndArrayChangeValue(item, fn, fn2) : i === 0 ? fn(item) : fn2(item)));
                 }
@@ -242,7 +241,7 @@ export class VisMain implements ComponentInterface {
             layerDataMap: this.layerDataMap,
             layerMetadataMap: this.layerMetadataMap,
             pluginIndex: this.pluginIndex,
-            idAndColorMap: new Map([...(this.pinAndColorMap?.entries() || [])].map(([{ id }, color]) => [id, color])),
+            pinAndColorMap: this.pinAndColorMap
           };
           return this.longbarElement;
         };
@@ -397,6 +396,6 @@ export class VisMain implements ComponentInterface {
       }),
     );
 
-    this.longbarElement.data = { ...this.longbarElement.data, idAndColorMap: new Map([...(this.pinAndColorMap?.entries() || [])].map(([{ id }, color]) => [id, color])) };
+    this.longbarElement.data = { ...this.longbarElement.data, pinAndColorMap: this.pinAndColorMap };
   }
 }
