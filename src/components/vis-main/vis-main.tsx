@@ -188,6 +188,7 @@ export class VisMain implements ComponentInterface {
       onEachFeature: (feature, layer) => {
         layer.on('click', () => this.selectPolygon(layerInfo, feature.properties.id));
       },
+      pointToLayer: (_feature, latlng) => new leaflet.CircleMarker(latlng),
     });
     this.overlayLayers.push([geoJSONLayer, layerInfo]);
     geoJSONLayer.addTo(this.map);
