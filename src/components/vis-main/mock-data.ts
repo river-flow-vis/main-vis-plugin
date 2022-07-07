@@ -65,11 +65,12 @@ export const mockData: MainData = {
   plugins: [
     {
       name: 'Longbar',
+      title: 'Location Comparison',
       plugins: [
         {
           granularity: 'monthly',
           name: 'LongbarLineChart',
-          title: 'Line',
+          title: 'Line Chart',
           variables: ['scalarSWE', 'scalarSenHeatTotal'],
         },
       ],
@@ -88,7 +89,7 @@ export const mockData: MainData = {
         {
           granularity: 'monthly',
           name: 'SidebarLineChart',
-          title: 'Line',
+          title: 'Line Chart',
           variables: ['scalarSWE', 'scalarSenHeatTotal'],
         },
       ],
