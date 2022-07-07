@@ -60,7 +60,7 @@ export class VisMainTimeControl implements ComponentInterface {
     return (
       <Host>
         <vis-main-collapse>
-          <h3 slot="header">Time Control</h3>
+          <b slot="header">Time Control</b>
           <h3>{`Year: ${this.timestamp?.year}, Timestamp: ${this.timestamp?.timestamp}`}</h3>
           <input
             id="timestamp-slider"
@@ -73,28 +73,36 @@ export class VisMainTimeControl implements ComponentInterface {
               this.timestamp = this.timestamps[+value];
             }}
           />
-          <button
-            disabled={this.playing}
-            onClick={() => {
-              clearInterval(this.animationTimer);
-              this.animationTimer = setInterval(() => this.play(), MS_IN_SECOND / this.timestampsPerSecond);
-              this.playing = true;
-            }}
-          >
-            Play
-          </button>
-          <button
-            disabled={!this.playing}
-            onClick={() => {
-              clearInterval(this.animationTimer);
-              this.playing = false;
-            }}
-          >
-            Pause
-          </button>
-          <div>
-            <label>Timestamps/Second</label>
-            <input type="number" value={this.timestampsPerSecond} onChange={event => (this.timestampsPerSecond = +(event.currentTarget as HTMLInputElement).value)} />
+          <div style={{ display: 'inline-block', padding: '.5rem 0' }}>
+            <button
+              disabled={this.playing}
+              onClick={() => {
+                clearInterval(this.animationTimer);
+                this.animationTimer = setInterval(() => this.play(), MS_IN_SECOND / this.timestampsPerSecond);
+                this.playing = true;
+              }}
+            >
+              Play
+            </button>
+            <div style={{ display: 'inline-block', width: '.5rem' }}></div>
+            <button
+              disabled={!this.playing}
+              onClick={() => {
+                clearInterval(this.animationTimer);
+                this.playing = false;
+              }}
+            >
+              Pause
+            </button>
+            <div style={{ display: 'inline-block', width: '.5rem' }}></div>
+            <label>Interval</label>
+            <div style={{ display: 'inline-block', width: '.5rem' }}></div>
+            <input
+              style={{ width: '5rem' }}
+              type="number"
+              value={this.timestampsPerSecond}
+              onChange={event => (this.timestampsPerSecond = +(event.currentTarget as HTMLInputElement).value)}
+            />
           </div>
         </vis-main-collapse>
       </Host>

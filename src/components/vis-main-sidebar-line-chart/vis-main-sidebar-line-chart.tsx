@@ -18,7 +18,7 @@ export class VisMainSidebarLineChart implements ComponentInterface {
     return (
       <Host>
         <vis-main-collapse>
-          <div slot="header">{this.data?.title}</div>
+          <b slot="header">{this.data?.title}</b>
           <div
             ref={el => {
               const variableAndTimeSeriesDataDict = this.obtainVariableAndTimeSeriesDataDict();
@@ -32,7 +32,7 @@ export class VisMainSidebarLineChart implements ComponentInterface {
               );
               if (this.data?.variables?.includes(this.data.selection?.layer?.variable)) {
                 setTimeout(() => {
-                  new Line(
+                  const lineChart = new Line(
                     el,
                     {
                       labels: Object.values(data)?.[0]?.map(({ year, timestamp }) => `${year}-${timestamp}`),
@@ -44,6 +44,17 @@ export class VisMainSidebarLineChart implements ComponentInterface {
                       },
                     },
                   );
+                  lineChart.on('draw', context => {
+                    if (context.type === 'line') {
+                      context.element.attr({
+                        style: `stroke-width: 2px`,
+                      });
+                    } else if(context.type === 'point') {
+                      context.element.attr({
+                        style: `stroke-width: 5px`,
+                      });
+                    }
+                  });
                 }, 100 /* TODO this is a temp fix */);
               }
             }}

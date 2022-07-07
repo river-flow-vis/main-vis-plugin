@@ -1,10 +1,15 @@
 :host {
   display: block;
-  padding: 0.5rem;
   width: var(--width);
   box-sizing: border-box;
 }
 
 #timestamp-slider {
   width: 100%;
+}
+
+vis-main-collapse::part(header) {
+  height: 1.5rem;
+  background: #87a96b;
+  font-size: 1.2rem;
 }

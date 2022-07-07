@@ -64,7 +64,7 @@ export class VisMainSidebar implements ComponentInterface {
           <button onClick={() => (this.pins = [...this.pins, this.data?.selection])}>+</button>
         </div>
         <div id="right-section" class={this.collapsed ? 'collapsed' : ''}>
-          <span id="header">Info for {this.data.selectedId || 'no selected ID'}</span>
+          <span id="header" style={{padding: '0 .5rem'}}>{this.data.selection ? `${this.data.selection.layer?.variable} - ${this.data.selection.id}` : 'no selected ID'}</span>
           <div id="charts-container" ref={el => (this.chartsContainerElement = el)}></div>
         </div>
       </Host>

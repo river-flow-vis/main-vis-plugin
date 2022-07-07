@@ -17,12 +17,18 @@ export class VisMainLongbarLineChart implements ComponentInterface {
   render() {
     return (
       <Host>
-        <div>{this.data?.title}</div>
-        <select ref={el => (this.variable = el.value)} onChange={({ currentTarget }) => (this.variable = (currentTarget as HTMLSelectElement).value)}>
-          {this.data?.variables?.map(variable => (
-            <option value={variable}>{variable}</option>
-          ))}
-        </select>
+        <div style={{marginLeft: '1rem'}}>
+          <span>{this.data?.title}</span>
+          <select
+            style={{ marginLeft: '.5rem' }}
+            ref={el => (this.variable = el.value)}
+            onChange={({ currentTarget }) => (this.variable = (currentTarget as HTMLSelectElement).value)}
+          >
+            {this.data?.variables?.map(variable => (
+              <option value={variable}>{variable}</option>
+            ))}
+          </select>
+        </div>
         <div
           ref={el => {
             const variableAndTimeSeriesDataDicts = this.obtainVariableAndTimeSeriesDataDictForLocations();
@@ -46,9 +52,13 @@ export class VisMainLongbarLineChart implements ComponentInterface {
               },
             );
             lineChart.on('draw', context => {
-              if (context.type === 'line' || context.type === 'point') {
+              if (context.type === 'line') {
                 context.element.attr({
-                  style: `stroke: ${[...this.data?.pinAndColorMap.values()]?.[context.seriesIndex]}`,
+                  style: `stroke-width: 2px; stroke: ${[...this.data?.pinAndColorMap.values()]?.[context.seriesIndex]};`,
+                });
+              } else if (context.type === 'point') {
+                context.element.attr({
+                  style: `stroke-width: 5px; stroke: ${[...this.data?.pinAndColorMap.values()]?.[context.seriesIndex]}`,
                 });
               }
             });
