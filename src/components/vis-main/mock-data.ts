@@ -38,6 +38,17 @@ export const mockData: MainData = {
     //   variable: 'scalarSenHeatTotal',
     // },
     {
+      colorMap: [
+        [-1000, 0, '#fdcc8a', '< 50'],
+        [0, 100, '#fc8d59'],
+        [100, 500, '#e34a33'],
+        [500, 10000, '#b30000', '> 150'],
+      ],
+      dataIndexUrl: 'public/data/river_network/index.json',
+      name: 'dlayRunoff',
+      variable: 'dlayRunoff',
+    },
+    {
       type: 'matrix',
       name: 'Contour',
       plot: 'contour',
@@ -90,7 +101,7 @@ export const mockData: MainData = {
           granularity: 'monthly',
           name: 'SidebarLineChart',
           title: 'Line Chart',
-          variables: ['scalarSWE', 'scalarSenHeatTotal'],
+          variables: ['dlayRunoff'],
         },
       ],
       width: '30rem',

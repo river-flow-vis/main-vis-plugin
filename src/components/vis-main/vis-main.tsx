@@ -347,13 +347,17 @@ export class VisMain implements ComponentInterface {
 
   private updateTime(year: string, timestamp: string) {
     this.overlayLayers.forEach(([layer, layerInfo]) =>
-      layer.setStyle(({ properties }) => {
+      layer.setStyle(({ geometry, properties }) => {
         const averageValue = this.layerDataMap.get(layerInfo)[properties.id].data[year][timestamp].average;
         const color = this.obtainGeoJSONPolygonColor(layerInfo, averageValue);
-        return {
+        const style = {
           fillColor: color,
           // fillOpacity: 0.5,
         };
+        if (geometry.type === 'LineString' || geometry.type === 'MultiLineString') {
+          style['color'] = color;
+        }
+        return style;
       }),
     );
   }
