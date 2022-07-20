@@ -355,7 +355,8 @@ export class VisMain implements ComponentInterface {
           // fillOpacity: 0.5,
         };
         if (geometry.type === 'LineString' || geometry.type === 'MultiLineString') {
-          style['color'] = color;
+          const highlightColor = [...this.pinAndColorMap.entries()]?.find(([{ layer: ly, id }]) => ly === layerInfo && id === properties.id)?.[1];
+          style['color'] = highlightColor || color;
         }
         return style;
       }),
