@@ -97,6 +97,16 @@ export const mockData: MainData = {
     },
     {
       name: 'Legend',
+      variable: 'Matrix',
+      width: '20rem',
+      continuous: true,
+      valueColorPairs: [
+        [245.97515150032606, 'hsla(180, 50%, 50%, 0)'],
+        [272.87128233461175, 'hsla(180, 50%, 50%, 1)'],
+      ],
+    },
+    {
+      name: 'Legend',
       variable: 'scalarSWE',
       width: '20rem',
     },

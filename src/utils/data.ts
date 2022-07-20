@@ -133,6 +133,8 @@ export interface LegendData extends PluginData {
   layerDataMap?: Map<OverlayLayer, LayerData>;
   variable?: string;
   colorMap: [number, number, string, string?][];
+  valueColorPairs?: [number, string][];
+  continuous?: boolean;
 }
 
 export interface TimeControlData extends PluginData {

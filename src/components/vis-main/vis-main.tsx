@@ -241,7 +241,7 @@ export class VisMain implements ComponentInterface {
             layerDataMap: this.layerDataMap,
             layerMetadataMap: this.layerMetadataMap,
             pluginIndex: this.pluginIndex,
-            pinAndColorMap: this.pinAndColorMap
+            pinAndColorMap: this.pinAndColorMap,
           };
           return this.longbarElement;
         };
