@@ -390,12 +390,15 @@ export class VisMain implements ComponentInterface {
   private updatePinAndColorMap(pinAndColorMap: Map<SidebarSelection, string>) {
     this.pinAndColorMap = pinAndColorMap;
 
-    const defaultColor = '#3388ff';
     this.overlayLayers.forEach(([layer, layerInfo]) =>
-      layer.setStyle(({ properties }) => {
+      layer.setStyle(({ geometry, properties }) => {
         let style;
-        const color = [...this.pinAndColorMap.entries()]?.find(([{ layer: ly, id }]) => ly === layerInfo && id === properties.id)?.[1] || defaultColor;
-        style = { color };
+        const color = [...this.pinAndColorMap.entries()]?.find(([{ layer: ly, id }]) => ly === layerInfo && id === properties.id)?.[1];
+        style = color ? { color } : {};
+        if (geometry.type === 'LineString' || geometry.type === 'MultiLineString') {
+          const previousColor = layer.options.style['color'];
+          style = color ? { color } : previousColor ? { color: previousColor } : {};
+        }
         return style;
       }),
     );
