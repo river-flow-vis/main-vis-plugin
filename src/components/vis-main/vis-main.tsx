@@ -111,10 +111,6 @@ export class VisMain implements ComponentInterface {
               break;
             case 'scatter':
               {
-                const scaleColor = d3
-                  .scaleLinear()
-                  .domain([d3.min(values.filter(d => d >= 0)), d3.max(values)])
-                  .range(['hsla(180, 50%, 50%, 0', 'hsla(180, 50%, 50%, 1'] as any);
                 const geoJson = {
                   type: 'FeatureCollection',
                   features: matrix.flatMap((row, y) =>
@@ -134,10 +130,14 @@ export class VisMain implements ComponentInterface {
                   ),
                 };
                 const geoJSONLayer = leaflet.geoJSON(geoJson as any, {
-                  pointToLayer: (feature, latlng) =>
-                    new leaflet.Circle(latlng, {
-                      color: scaleColor(+feature.properties.value) as any,
-                    }),
+                  pointToLayer: (feature, latlng) => {
+                    const colorKey = Object.keys(layerInfo.colors)
+                      .sort((a, b) => +b - +a)
+                      .find(value => +value <= feature.properties.value);
+                    return new leaflet.Circle(latlng, {
+                      color: layerInfo.colors[colorKey] || 'transparent',
+                    });
+                  },
                 });
                 geoJSONLayer.addTo(this.map);
                 this.layerControl.addOverlay(geoJSONLayer, 'scatter');
