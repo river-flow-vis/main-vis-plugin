@@ -360,6 +360,7 @@ export class VisMain implements ComponentInterface {
           const highlightColor = [...(this.pinAndColorMap?.entries() || [])]?.find(([{ layer: ly, id }]) => ly === layerInfo && id === properties.id)?.[1];
           style['color'] = highlightColor || color;
         }
+        properties.__color__ = style['color'];
         return style;
       }),
     );
@@ -399,7 +400,7 @@ export class VisMain implements ComponentInterface {
         const color = [...this.pinAndColorMap.entries()]?.find(([{ layer: ly, id }]) => ly === layerInfo && id === properties.id)?.[1];
         style = color ? { color } : {};
         if (geometry.type === 'LineString' || geometry.type === 'MultiLineString') {
-          const previousColor = layer.options.style['color'];
+          const previousColor = properties.__color__;
           style = color ? { color } : previousColor ? { color: previousColor } : {};
         }
         return style;
