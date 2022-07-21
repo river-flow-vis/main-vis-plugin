@@ -105,6 +105,7 @@ export class VisMain implements ComponentInterface {
                     layer.on('click', () => alert(geometry['value']));
                   },
                 });
+                geoJSONLayer.addTo(this.map);
                 this.layerControl.addOverlay(geoJSONLayer, 'contours');
               }
               break;
@@ -138,6 +139,7 @@ export class VisMain implements ComponentInterface {
                       color: scaleColor(+feature.properties.value) as any,
                     }),
                 });
+                geoJSONLayer.addTo(this.map);
                 this.layerControl.addOverlay(geoJSONLayer, 'scatter');
               }
               break;
