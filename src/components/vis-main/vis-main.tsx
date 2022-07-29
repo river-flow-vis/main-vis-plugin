@@ -25,6 +25,10 @@ import * as d3 from 'd3';
 export class VisMain implements ComponentInterface {
   static readonly TAG_NAME = 'vis-main';
 
+  private readonly COLOR_SCHEME_DICT = {
+    blues: d3.interpolateBlues,
+  };
+
   private mapElement: HTMLDivElement;
   private map: leaflet.Map;
   private sidebar: leaflet.Control;
@@ -71,6 +75,7 @@ export class VisMain implements ComponentInterface {
 
   private async initializeOverlayLayers(data: MainData) {
     for (const layerInfo of data.overlayLayers) {
+      const colorScheme = this.COLOR_SCHEME_DICT[layerInfo.colorScheme || 'blues'];
       switch (layerInfo.type) {
         case 'matrix':
           let response = await fetch(this.serverFileAPIPath + layerInfo.dataIndexUrl);
@@ -96,10 +101,14 @@ export class VisMain implements ComponentInterface {
                   fillOpacity: 5,
                   weight: 0,
                 };
+
+                const thresholds = contours.map(contour => contour.value);
+                const scaleColor = d3.scaleSequentialQuantile(colorScheme).domain(thresholds.sort());
                 const geoJSONLayer = leaflet.geoJSON({ type: 'FeatureCollection', features: contours.map(g => ({ type: 'Feature', geometry: g })) } as any, {
                   style: ({ geometry }) => ({
                     ...defaultStyle,
-                    color: layerInfo.colors[geometry['value']],
+                    color: layerInfo.colorScheme ? (scaleColor(geometry['value']) as any) : layerInfo.colors[geometry['value']],
+                    opacity: 0.5,
                   }),
                   onEachFeature: ({ geometry }, layer) => {
                     layer.on('click', () => alert(geometry['value']));
@@ -129,13 +138,19 @@ export class VisMain implements ComponentInterface {
                     ),
                   ),
                 };
+                const scaleColor = d3.scaleSequential(t => (t >= 0 && t <= 1 ? colorScheme(t) : undefined)).domain([d3.min(values.filter(d => d >= 0)), d3.max(values)]);
                 const geoJSONLayer = leaflet.geoJSON(geoJson as any, {
                   pointToLayer: (feature, latlng) => {
-                    const colorKey = Object.keys(layerInfo.colors)
-                      .sort((a, b) => +b - +a)
-                      .find(value => +value <= feature.properties.value);
+                    let colorKey: string;
+                    if (!layerInfo.colorScheme && layerInfo.colors) {
+                      colorKey = Object.keys(layerInfo.colors)
+                        .sort((a, b) => +b - +a)
+                        .find(value => +value <= feature.properties.value);
+                    }
+                    const color = (layerInfo.colorScheme ? scaleColor(+feature.properties.value) : layerInfo.colors[colorKey]) || 'transparent';
                     return new leaflet.Circle(latlng, {
-                      color: layerInfo.colors[colorKey] || 'transparent',
+                      color,
+                      opacity: .5,
                     });
                   },
                 });
@@ -189,7 +204,7 @@ export class VisMain implements ComponentInterface {
       onEachFeature: (feature, layer) => {
         layer.on('click', () => this.selectPolygon(layerInfo, feature.properties.id));
       },
-      pointToLayer: (_feature, latlng) => new leaflet.CircleMarker(latlng),
+      pointToLayer: (_feature, latlng) => new leaflet.CircleMarker(latlng, { radius: layerInfo.pointRadius || 5 }),
     });
     this.overlayLayers.push([geoJSONLayer, layerInfo]);
     geoJSONLayer.addTo(this.map);

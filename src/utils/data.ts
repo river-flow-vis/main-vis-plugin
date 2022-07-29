@@ -69,6 +69,8 @@ export interface OverlayLayer {
   thresholds?: number | number[];
   colors?: { [value: number]: string };
   colorRange?: [string, string];
+  pointRadius?: number;
+  colorScheme?: string;
 }
 
 export interface PluginData {
